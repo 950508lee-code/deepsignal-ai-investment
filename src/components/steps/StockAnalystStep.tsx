@@ -14,7 +14,7 @@ export default function StockAnalystStep({ onNext, onPrevious, userData }: Stock
   const selectedSectors = userData.selectedSectors || []
   
   const getStockRecommendations = () => {
-    const stocksByCategory = {
+    const stocksByCategory: { [key: string]: any[] } = {
       'AI/반도체': [
         { symbol: 'NVDA', name: '엔비디아', rating: 'Buy', target: '$550', reason: 'AI 반도체 리더' },
         { symbol: 'AMD', name: 'AMD', rating: 'Buy', target: '$180', reason: 'CPU/GPU 경쟁력 강화' },
