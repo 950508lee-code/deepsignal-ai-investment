@@ -68,7 +68,7 @@ export default function IndustryResearcherStep({ onNext, onPrevious, userData }:
   }
 
   return (
-    <div className="pt-16 pb-6 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
       <div className="max-w-md mx-auto space-y-6">
         {/* AI 전문가 소개 카드 */}
         <div className="relative bg-gradient-to-br from-slate-800/90 to-purple-900/90 backdrop-blur-xl rounded-3xl p-6 text-center border border-white/10 shadow-2xl overflow-hidden">

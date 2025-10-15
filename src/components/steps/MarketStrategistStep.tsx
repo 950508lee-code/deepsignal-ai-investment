@@ -17,8 +17,8 @@ export default function MarketStrategistStep({ onNext, onPrevious, userData }: M
   // 글로벌 멀티에셋 브리핑 데이터
   const globalMarketData = {
     // AI 종합 판단
-    aiSummary: "완화 기대 우세, 변동성은 중간. 위험자산 선별적 강세.",
-    position: "Risk-on", // Risk-on / Neutral / Risk-off
+    aiSummary: "중앙은행의 금리 인하 기대감이 높아지면서 시장 분위기가 좋아지고 있습니다. 시장 변동성은 적당한 수준이며, 주식 등 위험자산들이 선별적으로 상승하고 있는 상황입니다.",
+    position: "위험자산 선호", // 위험자산 선호 / 관망 / 안전자산 선호
     positionScore: 2, // -2 ~ +2 점수
     
     // 주식 지역 4대장
@@ -95,578 +95,521 @@ export default function MarketStrategistStep({ onNext, onPrevious, userData }: M
       { name: 'VIX', value: '16.2', status: '보통', range: '15~25', color: 'yellow', label: '단기 랠리 지속성 점검' },
       { name: 'MOVE', value: '95.8', status: '낮음', range: '<100', color: 'green', label: '채권 안정' },
       { name: 'CDX IG', value: '58bp', status: '낮음', range: '<70', color: 'green', label: '신용 양호' }
-    ],
-    
-    // AI 종합 인사이트 (대화체 브리핑)
-    insights: [
-      { category: '금리', text: '미국 장기금리가 잠시 멈췄습니다. 금리가 더 이상 빠지지 않으면, 주식의 밸류에이션이 더 올라가긴 어렵겠어요.' },
-      { category: '환율', text: '달러가 약해지고 원화가 강해지면서 외국인 자금이 코스피로 들어오기 좋은 환경입니다.' },
-      { category: '변동성', text: '시장이 안정적이지만, 너무 안심하긴 이른 단계예요. 단기 랠리가 얼마나 이어질지 확인이 필요합니다.' },
-      { category: '크립토', text: '비트코인이 장기 추세선 위에서 움직이고 있습니다. 투자심리는 살아있지만, 정책 변수엔 여전히 주의가 필요합니다.' },
-      { category: '결론', text: '종합적으로 보면 **"조심스럽게 긍정적"**입니다. 지금은 전면 투자보다는 기회가 있는 분야에 선택적으로 참여하는 시기로 보입니다.' }
-    ],
-    
-    // 지표 설명 데이터베이스 (AI 해석 툴팁 - 전체 지표)
-    indicatorExplanations: {
-      // 주식 지수
-      '코스피': {
-        oneLine: '한국 대표 주식 지수예요. 이 지수가 오르면 한국 경제와 기업들이 좋아지고 있다는 의미예요.',
-        detailed: '코스피(KOSPI)는 한국거래소에 상장된 대형주 200개를 대상으로 한 지수입니다. 2,600포인트 이상이면 경기 회복이 기대되는 구간이에요.'
-      },
-      '나스닥': {
-        oneLine: '미국 전자/기술주 중심 지수예요. 애플, 테슬라, 구글 같은 기술주들의 상황을 보여줘요.',
-        detailed: '나스닥(NASDAQ)은 미국의 기술 혁신 기업들이 대거 상장된 거래소입니다. 15,000포인트 이상이면 글로벌 기술주들이 좋은 흐름을 보이고 있다는 의미예요.'
-      },
-      '닛케이': {
-        oneLine: '일본 대표 주식 지수예요. 일본 경제와 엔화 가치에 따라 영향을 받아요.',
-        detailed: '닛케이 225는 일본의 대표적인 대기업 225개를 대상으로 한 지수입니다. 39,000포인트 이상이면 일본 버블 절정 이후 최고 수준을 유지하고 있다는 의미예요.'
-      },
-      'HSI': {
-        oneLine: '홍콩 항생 지수예요. 중국 본토와 홍콩 경제 상황을 보여주는 지표예요.',
-        detailed: '홍콩 항생지수(HSI)는 홍콩 거래소에 상장된 주요 기업들의 주가를 반영합니다. 20,000포인트 이상이면 중국 대륙 경제 회복 기대감이 높아지고 있다는 신호예요.'
-      },
-      
-      // 환율 지표
-      'USD/KRW': {
-        oneLine: '원-달러 환율이에요. 숫자가 낮아지면 원화가 강해지는 것으로, 외국인 투자에 유리해요.',
-        detailed: '환율 하락은 한국 자산의 달러 기준 가치 상승을 의미하며, 외국인 자금 유입과 코스피 상승에 긍정적 영향을 줘요. 1,300원 아래로 내려가면 원화 강세 구간이에요.'
-      },
-      'USD/JPY': {
-        oneLine: '달러-엔화 환율이에요. 일본의 금리 정책과 미국 금리 차이에 따라 변동해요.',
-        detailed: '미국과 일본 간 금리 차이가 줄어들면 엔화가 강세를 보이게 됩니다. 150엔 아래로 내려가면 엔화 강세 구간으로 보여요.'
-      },
-      'DXY': {
-        oneLine: '달러의 전반적인 강약을 나타내는 지표예요. 수치가 낮아지면 달러 약세로, 신흥국·코스피엔 좋은 환경이에요.',
-        detailed: '주요 6개국 통화 대비 달러의 가치를 나타냅니다. 최근 DXY 하락은 미국 금리 인하 기대와 함께 위험자산으로의 자금 이동 가능성을 높여요. 103 이하는 신흥국 좋은 구간이에요.'
-      },
-      
-      // 금리 지표
-      '미10Y': {
-        oneLine: '미국의 10년 만기 국채금리예요. 이 수치가 내려가면 주식시장은 보통 긍정적으로 반응합니다.',
-        detailed: '장기금리는 시장이 미래 금리를 어떻게 예상하는지를 보여줍니다. 최근 금리 하락은 "경기 둔화+금리 인하 기대"가 반영된 흐름이에요. 주식·특히 성장주엔 우호적 신호입니다.'
-      },
-      '미2Y': {
-        oneLine: '미국 2년 국채금리예요. 연준의 단기 금리 정책 방향을 미리 보여주는 지표예요.',
-        detailed: '연준의 단기 금리 정책 방향을 예측하는 데 중요한 지표입니다. 금리가 내려가면 통화 완화 기대감이 높아지고 있다는 의미예요.'
-      },
-      '한10Y': {
-        oneLine: '한국 10년 국채금리예요. 한국 경제와 금리 전망을 반영하는 지표예요.',
-        detailed: '한국의 장기금리 기준으로, 3.5% 전후는 안정적인 수준으로 평가됩니다. 미국 금리와의 차이도 중요한 요소예요.'
-      },
-      '2s10s': {
-        oneLine: '미국 2년과 10년 금리 차이예요. 마이너스면 경기 침체 우려, 플러스면 정상적 경기 상황이에요.',
-        detailed: '일반적으로 장기금리가 단기금리보다 높은 것이 정상이에요. 역전 상황이 해소되면 경기 회복 기대감이 높아진다는 의미예요.'
-      },
-      
-      // 원자재
-      '금(XAU)': {
-        oneLine: '금 가격이에요. 불안할 때 오르고, 안정될 때 내리는 안전자산의 대표주자예요.',
-        detailed: '전통적인 안전자산으로, 인플레이션이나 지정학적 리스크가 높아질 때 수요가 증가해요. $2,000 이상은 리스크 헤지 수요가 높은 상황을 의미해요.'
-      },
-      'WTI': {
-        oneLine: '미국 원유 가격이에요. 세계 경제 성장과 에너지 수요를 반영하는 지표예요.',
-        detailed: '서부 텍사스 중질유(WTI)는 글로벌 원유 가격의 기준입니다. $80 이상은 경제 성장 기대와 에너지 수요 증가를 의미해요.'
-      },
-      
-      // 암호화폐
-      'BTC': {
-        oneLine: '비트코인은 위험자산의 "심리 온도계" 역할을 합니다. 오를 때는 시장에 "위험 감수 의지"가 커졌다는 뜻이에요.',
-        detailed: '금리와 달리 "미래 성장 기대"에 반응하는 자산입니다. 최근 상승은 유동성 회복 기대와 연관이 있습니다.'
-      },
-      'ETH': {
-        oneLine: '이더리움 가격이에요. 비트코인 다음으로 큰 암호화폐로, 디파이와 NFT 플랫폼으로 유명해요.',
-        detailed: '스마트 컨트랙트와 디파이(DeFi) 애플리케이션의 기반이 되는 블록체인이에요. 알트코인 전체의 심리를 보여주는 지표로 활용돼요.'
-      },
-      
-      // 변동성 지표
-      'VIX': {
-        oneLine: '주식시장의 불안도를 보여주는 지수예요. 20 아래면 시장이 비교적 안정적이라는 뜻입니다.',
-        detailed: '옵션시장 변동성을 기준으로 측정된 공포지수입니다. 지금 수준은 "평온하지만, 약간의 긴장감은 남아있는" 단계로 해석됩니다.'
-      },
-      'MOVE': {
-        oneLine: '채권시장의 변동성을 나타내는 지표예요. 낮을수록 채권시장이 안정적입니다.',
-        detailed: '채권 옵션 변동성 지수로, 금리 변화에 대한 시장의 불안감을 측정합니다. 100 이하는 채권시장이 비교적 차분한 상태를 의미합니다.'
-      },
-      'CDX IG': {
-        oneLine: '회사들의 부도 위험도를 나타내는 지표예요. 낮을수록 기업 신용이 좋다는 뜻입니다.',
-        detailed: '투자등급 기업들의 신용위험 프리미엄입니다. 70bp 이하는 기업 부도 위험이 낮고, 신용시장이 건전한 상태를 나타냅니다.'
-      }
-    }
+    ]
   }
 
   const handleNext = () => {
-    onNext({ 
-      marketAnalysis: globalMarketData,
-      marketTimestamp: new Date().toISOString()
-    })
+    onNext({ marketData: globalMarketData })
   }
 
-  const userProfile = userData.investmentProfile?.mbtiProfile || { type: '균형형 투자자' }
-  const aiLevel = userData.aiInvolvementLevel || 'collaboration'
-
-  // 포지션 배지 색상
   const getPositionBadgeColor = (position: string) => {
     switch(position) {
-      case 'Risk-on': return 'bg-green-500 text-white'
-      case 'Risk-off': return 'bg-red-500 text-white'
-      default: return 'bg-gray-500 text-white'
+      case '위험자산 선호': return 'bg-green-500/20 text-green-300 border-green-400/30'
+      case '안전자산 선호': return 'bg-red-500/20 text-red-300 border-red-400/30'
+      default: return 'bg-yellow-500/20 text-yellow-300 border-yellow-400/30'
     }
   }
 
-  // 트렌드 색상
   const getTrendColor = (trend: string) => {
     switch(trend) {
-      case 'up': return 'text-green-600'
-      case 'down': return 'text-red-600'
-      default: return 'text-gray-600'
+      case 'up': return 'text-green-400'
+      case 'down': return 'text-red-400'
+      default: return 'text-yellow-400'
     }
-  }
-
-  // 변동성 상태 색상
-  const getVolatilityColor = (color: string) => {
-    switch(color) {
-      case 'green': return 'bg-green-100 text-green-800'
-      case 'yellow': return 'bg-yellow-100 text-yellow-800'
-      case 'red': return 'bg-red-100 text-red-800'
-      default: return 'bg-gray-100 text-gray-800'
-    }
-  }
-
-  const toggleSection = (section: string) => {
-    setExpandedSection(expandedSection === section ? null : section)
-  }
-
-  // 지표 설명 툴팁 함수
-  const showTooltip = (indicator: string) => {
-    setTooltipVisible(indicator)
-  }
-
-  const hideTooltip = () => {
-    setTooltipVisible(null)
-  }
-
-  // 상세 모달 열기
-  const openDetailModal = (indicator: string) => {
-    const content = (globalMarketData.indicatorExplanations as any)[indicator]
-    if (content) {
-      setDetailModal({ isOpen: true, indicator, content })
-    }
-  }
-
-  // 상세 모달 닫기
-  const closeDetailModal = () => {
-    setDetailModal({ isOpen: false, indicator: '', content: {} })
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-4 sm:p-8 max-w-4xl mx-auto">
-      {/* 헤더 */}
-      <div className="text-center mb-6">
-        <div className="text-4xl mb-4">📊</div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">시장전략가 소피아</h2>
-        <p className="text-indigo-600 font-medium mb-2 italic">&quot;글로벌 마켓 인텔리전스&quot;</p>
-        <p className="text-gray-600 mb-4">실시간 글로벌 시장을 종합 분석하여 AI가 공부 대신 요약해드립니다.</p>
-      </div>
-
-      {/* 상단: AI 한줄 결론 + 포지션 배지 */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 sm:p-6 mb-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3">
-          <h3 className="text-lg sm:text-xl font-bold text-blue-900 mb-2 sm:mb-0">🧠 AI 시장 핵심 진단</h3>
-          <span className={`px-3 py-1 rounded-full text-sm font-bold ${getPositionBadgeColor(globalMarketData.position)}`}>
-            {globalMarketData.position}
-          </span>
-        </div>
-        <p className="text-blue-800 text-sm sm:text-base leading-relaxed">
-          {globalMarketData.aiSummary}
-        </p>
-      </div>
-
-      {/* 섹션 A — 주식: 지역 4대장 스냅샷 */}
-      <div className="mb-6">
-        <div className="flex justify-between items-center mb-4">
-          <h4 className="text-lg font-bold text-gray-800 flex items-center">
-            📈 글로벌 주식
-          </h4>
-        </div>
-        
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          {globalMarketData.equities.map((equity, index) => (
-            <div 
-              key={index}
-              className={`bg-white border rounded-lg p-3 cursor-pointer transition-all ${
-                selectedEquity === equity.region ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'
-              }`}
-              onClick={() => setSelectedEquity(selectedEquity === equity.region ? null : equity.region)}
-            >
-              <div 
-                className="text-center cursor-pointer relative"
-                onMouseEnter={() => showTooltip(equity.name)}
-                onMouseLeave={hideTooltip}
-                onClick={() => openDetailModal(equity.name)}
-              >
-                <div className="text-xs font-bold text-gray-500 mb-1">{equity.region}</div>
-                <div className="text-sm font-semibold text-gray-800 mb-1 flex items-center justify-center">
-                  {equity.name}
-                  <span className="ml-1 text-blue-500">ℹ️</span>
-                </div>
-                <div className="text-lg font-bold text-gray-900">{equity.value}</div>
-                <div className="flex justify-center gap-2 text-xs mt-2">
-                  <span className={getTrendColor(equity.trend)}>{equity.change1D}</span>
-                  <span className={getTrendColor(equity.trend)}>{equity.change1W}</span>
-                </div>
-                
-                {/* AI 툴팁 */}
-                {tooltipVisible === equity.name && globalMarketData.indicatorExplanations && (
-                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-black text-white text-xs rounded-lg max-w-64 z-10">
-                    {(globalMarketData.indicatorExplanations as any)[equity.name]?.oneLine || '이 지표에 대한 설명을 준비중입니다.'}
-                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-black"></div>
-                  </div>
-                )}
-              </div>
-              
-              {/* 섹터 상위/하위 (터치 시 표시) */}
-              {selectedEquity === equity.region && (
-                <div className="mt-3 pt-3 border-t border-gray-200">
-                  <div className="grid grid-cols-1 gap-2">
-                    <div>
-                      <div className="text-xs font-semibold text-green-700 mb-1">상위 섹터</div>
-                      {equity.topSectors.map((sector, idx) => (
-                        <div key={idx} className="text-xs text-green-600">{sector}</div>
-                      ))}
-                    </div>
-                    <div>
-                      <div className="text-xs font-semibold text-red-700 mb-1">하위 섹터</div>
-                      {equity.bottomSectors.map((sector, idx) => (
-                        <div key={idx} className="text-xs text-red-600">{sector}</div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* 섹션 B — 환율 & 금리 */}
-      <div className="mb-6">
-        <div className="flex justify-between items-center mb-4">
-          <h4 className="text-lg font-bold text-gray-800 flex items-center">
-            💱 환율 & 금리
-          </h4>
-        </div>
-        
-        <div className="space-y-4">
-          {/* 환율 */}
-          <div>
-            <h5 className="text-sm font-semibold text-gray-700 mb-2">환율</h5>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {globalMarketData.fxRates.map((fx, index) => (
-                <div 
-                  key={index} 
-                  className="bg-gray-50 rounded-lg p-3 cursor-pointer relative"
-                  onMouseEnter={() => showTooltip(fx.name)}
-                  onMouseLeave={hideTooltip}
-                  onClick={() => openDetailModal(fx.name)}
-                >
-                  <div className="flex justify-between items-start mb-1">
-                    <span className="text-sm font-semibold text-gray-800 flex items-center">
-                      {fx.name}
-                      <span className="ml-1 text-blue-500 text-xs">ℹ️</span>
-                    </span>
-                    <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-                      {fx.label}
-                    </span>
-                  </div>
-                  <div className="text-lg font-bold text-gray-900">{fx.value}</div>
-                  <div className={`text-xs ${getTrendColor(fx.trend)}`}>{fx.change}</div>
-                  
-                  {/* AI 툴팁 */}
-                  {tooltipVisible === fx.name && globalMarketData.indicatorExplanations && (
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-black text-white text-xs rounded-lg max-w-64 z-10">
-                      {(globalMarketData.indicatorExplanations as any)[fx.name]?.oneLine || '이 지표에 대한 설명을 준비중입니다.'}
-                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-black"></div>
-                    </div>
-                  )}
-                </div>
-              ))}
+    <div className="pt-16 pb-6 px-2 md:px-4">
+      <div className="relative z-10 container mx-auto px-2 md:px-4 py-4 md:py-8">
+        <div className="max-w-6xl mx-auto space-y-4 md:space-y-6">
+          {/* Header */}
+          <div className="relative bg-gradient-to-r from-slate-800/90 to-purple-900/90 backdrop-blur-xl rounded-2xl p-4 md:p-8 border border-white/10 shadow-xl">
+            <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-purple-500/5 rounded-2xl"></div>
+            <div className="relative z-10 text-center">
+              <div className="text-4xl md:text-6xl mb-3 md:mb-4">🌍</div>
+              <h2 className="text-xl md:text-2xl font-bold text-white mb-2">시장전략가 마쿠스</h2>
+              <p className="text-emerald-400 font-medium mb-2 italic text-sm md:text-base">"글로벌 마켓 인사이트의 마스터"</p>
+              <p className="text-purple-200 mb-4 text-sm md:text-base leading-relaxed">안녕하세요! 저는 마쿠스입니다. 복잡한 시장 데이터를 초보자도 이해하기 쉬운 인사이트로 풀어서 설명해드립니다. 지금 시장에서 일어나고 있는 일들이 여러분의 투자에 어떤 영향을 주는지 알려드릴게요.</p>
             </div>
           </div>
-          
-          {/* 금리 */}
-          <div>
-            <h5 className="text-sm font-semibold text-gray-700 mb-2">금리</h5>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {globalMarketData.bonds.map((bond, index) => (
-                <div 
-                  key={index} 
-                  className="bg-gray-50 rounded-lg p-3 cursor-pointer relative"
-                  onMouseEnter={() => showTooltip(bond.name)}
-                  onMouseLeave={hideTooltip}
-                  onClick={() => openDetailModal(bond.name)}
-                >
-                  <div className="flex justify-between items-start mb-1">
-                    <span className="text-sm font-semibold text-gray-800 flex items-center">
-                      {bond.name}
-                      <span className="ml-1 text-blue-500 text-xs">ℹ️</span>
-                    </span>
-                    <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full">
-                      {bond.label}
-                    </span>
+
+          {/* Global Equities */}
+          <div className="relative bg-gradient-to-br from-slate-800/80 to-blue-900/80 backdrop-blur-xl rounded-2xl p-4 md:p-6 border border-white/10 shadow-xl">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-blue-500/5 rounded-2xl"></div>
+            <div className="relative z-10">
+              <h3 className="text-base md:text-lg font-bold text-white mb-4">🌏 전 세계 주식 시장 동향</h3>
+              <div className="bg-gradient-to-r from-blue-900/40 to-cyan-900/40 rounded-xl p-4 md:p-5 mb-4 border-l-4 border-cyan-400 backdrop-blur-sm">
+                <div className="flex flex-col md:flex-row md:items-start space-y-3 md:space-y-0 md:space-x-3">
+                  <div className="bg-cyan-500/20 rounded-full p-2 self-start">
+                    <span className="text-cyan-300 text-lg">💡</span>
                   </div>
-                  <div className="text-lg font-bold text-gray-900">{bond.value}</div>
-                  <div className={`text-xs ${getTrendColor(bond.trend)}`}>{bond.change}</div>
-                  
-                  {/* AI 툴팁 */}
-                  {tooltipVisible === bond.name && globalMarketData.indicatorExplanations && (
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-black text-white text-xs rounded-lg max-w-64 z-10">
-                      {(globalMarketData.indicatorExplanations as any)[bond.name]?.oneLine || '이 지표에 대한 설명을 준비중입니다.'}
-                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-black"></div>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-cyan-100 font-bold text-base md:text-lg mb-3 flex items-center flex-wrap">
+                      <span className="mr-2">🌍</span>
+                      마쿠스의 글로벌 주식 인사이트
+                    </h4>
+                    <div className="space-y-3">
+                      <div className="bg-cyan-800/20 rounded-lg p-3 md:p-4 border border-cyan-500/30">
+                        <div className="flex items-center mb-2 flex-wrap">
+                          <span className="text-green-400 text-lg md:text-xl mr-2 md:mr-3">✅</span>
+                          <span className="text-white font-semibold text-sm md:text-base">긴정적 신호</span>
+                        </div>
+                        <p className="text-cyan-100 text-xs md:text-sm leading-relaxed ml-0 md:ml-8">
+                          전 세계 주식 시장이 대부분 상승 중입니다. 특히 <span className="text-cyan-300 font-medium">미국 나스닥(+2.3%)</span>과 <span className="text-cyan-300 font-medium">한국 코스피(+2.1%)</span>가 좋은 모습을 보이고 있어요.
+                        </p>
+                      </div>
+                      <div className="bg-blue-800/20 rounded-lg p-3 md:p-4 border border-blue-500/30">
+                        <div className="flex items-center mb-2 flex-wrap">
+                          <span className="text-yellow-400 text-lg md:text-xl mr-2 md:mr-3">🚀</span>
+                          <span className="text-white font-semibold text-sm md:text-base">주목 업종</span>
+                        </div>
+                        <p className="text-blue-100 text-xs md:text-sm leading-relaxed ml-0 md:ml-8">
+                          <span className="text-green-300 font-medium">반도체</span>와 <span className="text-green-300 font-medium">IT 업종</span>이 전반적으로 좋은 성과를 보이고 있어 관련 주식에 주목해볼 만합니다.
+                        </p>
+                      </div>
+                      <div className="bg-indigo-800/20 rounded-lg p-3 md:p-4 border border-indigo-500/30">
+                        <div className="flex items-center mb-2 flex-wrap">
+                          <span className="text-purple-400 text-lg md:text-xl mr-2 md:mr-3">📈</span>
+                          <span className="text-white font-semibold text-sm md:text-base">투자 의미</span>
+                        </div>
+                        <p className="text-indigo-100 text-xs md:text-sm leading-relaxed ml-0 md:ml-8">
+                          이러한 상승세는 <span className="text-purple-300 font-medium">글로벌 경기 회복 기대감</span>이 높아지고 있다는 신호로, 주식 투자에 유리한 환경입니다.
+                        </p>
+                      </div>
                     </div>
-                  )}
+                  </div>
                 </div>
-              ))}
+              </div>
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {globalMarketData.equities.map((equity, index) => (
+                  <div key={index} className="bg-slate-700/50 rounded-xl p-4 border border-blue-400/20">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-semibold text-white">{equity.name}</h4>
+                      <span className="text-xs text-blue-300">{equity.region}</span>
+                    </div>
+                    <div className="text-xl font-bold text-blue-300 mb-1">{equity.value}</div>
+                    <div className="flex justify-between text-sm mb-3">
+                      <span className={getTrendColor(equity.trend)}>1D: {equity.change1D}</span>
+                      <span className={getTrendColor(equity.trend)}>1W: {equity.change1W}</span>
+                    </div>
+                    <div className="space-y-1">
+                      <div className="text-xs text-green-300">상승: {equity.topSectors[0]}</div>
+                      <div className="text-xs text-red-300">하락: {equity.bottomSectors[0]}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* 섹션 C — 원자재 & 크립토 */}
-      <div className="mb-6">
-        <div className="flex justify-between items-center mb-4">
-          <h4 className="text-lg font-bold text-gray-800 flex items-center">
-            🏗️ 원자재 & 크립토
-          </h4>
-        </div>
-        
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {/* 원자재 */}
-          {globalMarketData.commodities.map((comm, index) => (
-            <div 
-              key={index} 
-              className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 cursor-pointer relative"
-              onMouseEnter={() => showTooltip(comm.name)}
-              onMouseLeave={hideTooltip}
-              onClick={() => openDetailModal(comm.name)}
-            >
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-semibold text-gray-800 flex items-center">
-                  {comm.name}
-                  <span className="ml-1 text-blue-500 text-xs">ℹ️</span>
-                </span>
-                <span className="text-lg">{comm.icon}</span>
-              </div>
-              <div className="text-lg font-bold text-gray-900">{comm.value}</div>
-              <div className={`text-xs ${getTrendColor(comm.trend)} mb-1`}>{comm.change}</div>
-              
-              {/* AI 툴팁 */}
-              {tooltipVisible === comm.name && globalMarketData.indicatorExplanations && (
-                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-black text-white text-xs rounded-lg max-w-64 z-10">
-                  {(globalMarketData.indicatorExplanations as any)[comm.name]?.oneLine || '이 지표에 대한 설명을 준비중입니다.'}
-                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-black"></div>
+          {/* FX & Bonds */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+            <div className="relative bg-gradient-to-br from-slate-800/80 to-green-900/80 backdrop-blur-xl rounded-2xl p-4 md:p-6 border border-white/10 shadow-xl">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-green-500/5 rounded-2xl"></div>
+              <div className="relative z-10">
+                <h3 className="text-base md:text-lg font-bold text-white mb-4">💱 환율 동향</h3>
+                <div className="bg-gradient-to-r from-green-900/40 to-emerald-900/40 rounded-xl p-3 md:p-4 mb-4 border-l-4 border-emerald-400">
+                  <div className="flex flex-col md:flex-row md:items-start space-y-3 md:space-y-0 md:space-x-3">
+                    <div className="bg-emerald-500/20 rounded-full p-2 self-start">
+                      <span className="text-emerald-300 text-lg">💰</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-emerald-100 font-bold mb-3 text-sm md:text-base">환율 동향이 주는 시사점</h4>
+                      <div className="grid gap-3">
+                        <div className="bg-emerald-800/20 rounded-lg p-3 border border-emerald-500/20">
+                          <div className="flex items-center mb-1 flex-wrap">
+                            <span className="text-green-400 mr-2">📉</span>
+                            <span className="text-white font-medium text-xs md:text-sm">달러 약세 진행</span>
+                          </div>
+                          <p className="text-emerald-200 text-xs leading-relaxed">
+                            우리나라 <span className="text-emerald-300 font-medium">수출 기업</span>들에게 좋은 소식이에요
+                          </p>
+                        </div>
+                        <div className="bg-green-800/20 rounded-lg p-3 border border-green-500/20">
+                          <div className="flex items-center mb-1 flex-wrap">
+                            <span className="text-yellow-400 mr-2">🌍</span>
+                            <span className="text-white font-medium text-xs md:text-sm">해외투자 유리</span>
+                          </div>
+                          <p className="text-green-200 text-xs leading-relaxed">
+                            외국 주식 투자시 <span className="text-green-300 font-medium">환율 리스크 감소</span>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              )}
-              <div className="text-xs text-yellow-700">{comm.label}</div>
-            </div>
-          ))}
-          
-          {/* 크립토 */}
-          {globalMarketData.crypto.map((crypto, index) => (
-            <div 
-              key={index} 
-              className="bg-purple-50 border border-purple-200 rounded-lg p-3 cursor-pointer relative"
-              onMouseEnter={() => showTooltip(crypto.name)}
-              onMouseLeave={hideTooltip}
-              onClick={() => openDetailModal(crypto.name)}
-            >
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-1">
-                  <span className="text-sm font-semibold text-gray-800 flex items-center">
-                    {crypto.name}
-                    <span className="ml-1 text-blue-500 text-xs">ℹ️</span>
-                  </span>
+                <div className="space-y-3">
+                  {globalMarketData.fxRates.map((fx, index) => (
+                    <div key={index} className="flex justify-between items-center p-3 bg-slate-700/50 rounded-lg border border-green-400/20">
+                      <div>
+                        <div className="font-medium text-white">{fx.name}</div>
+                        <div className="text-xs text-green-300">{fx.label}</div>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-bold text-green-400">{fx.value}</div>
+                        <div className={`text-xs ${getTrendColor(fx.trend)}`}>{fx.change}</div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <span className="text-lg">{crypto.icon}</span>
-              </div>
-              <div className="text-lg font-bold text-gray-900">{crypto.value}</div>
-              <div className={`text-xs ${getTrendColor(crypto.trend)} mb-1`}>{crypto.change}</div>
-              <div className="text-xs text-purple-700">{crypto.label}</div>
-              
-              {/* AI 툴팁 */}
-              {tooltipVisible === crypto.name && globalMarketData.indicatorExplanations && (
-                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-black text-white text-xs rounded-lg max-w-64 z-10">
-                  {(globalMarketData.indicatorExplanations as any)[crypto.name]?.oneLine || '이 지표에 대한 설명을 준비중입니다.'}
-                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-black"></div>
-                </div>
-              )}
-              <div className={`text-xs ${getTrendColor(crypto.trend)} mb-1`}>{crypto.change}</div>
-              <div className="text-xs text-purple-700">{crypto.label}</div>
-              
-              {/* BTC 툴팁 */}
-              {tooltipVisible === 'BTC' && crypto.name === 'BTC' && (
-                <div className="absolute z-10 bg-black text-white text-xs rounded p-2 bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64">
-                  <div className="font-semibold mb-1">BTC 설명</div>
-                  <div>{(globalMarketData.indicatorExplanations as any)['BTC']?.oneLine}</div>
-                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-black"></div>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* 섹션 D — 변동성·스트레스 지표 */}
-      <div className="mb-6">
-        <div className="flex justify-between items-center mb-4">
-          <h4 className="text-lg font-bold text-gray-800 flex items-center">
-            📊 변동성 & 스트레스
-          </h4>
-        </div>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {globalMarketData.volatility.map((vol, index) => (
-            <div 
-              key={index} 
-              className="bg-white border border-gray-200 rounded-lg p-4 cursor-pointer relative"
-              onMouseEnter={() => showTooltip(vol.name)}
-              onMouseLeave={hideTooltip}
-              onClick={() => openDetailModal(vol.name)}
-            >
-              <div className="flex justify-between items-start mb-2">
-                <span className="text-sm font-semibold text-gray-800 flex items-center">
-                  {vol.name}
-                  <span className="ml-1 text-blue-500 text-xs">ℹ️</span>
-                </span>
-                <span className={`text-xs px-2 py-1 rounded-full ${getVolatilityColor(vol.color)}`}>
-                  {vol.status}
-                </span>
-              </div>
-              <div className="text-2xl font-bold text-gray-900 mb-1">{vol.value}</div>
-              <div className="text-xs text-gray-500 mb-2">{vol.range}</div>
-              <div className="text-xs text-gray-600">{vol.label}</div>
-              
-              {/* AI 툴팁 */}
-              {tooltipVisible === vol.name && globalMarketData.indicatorExplanations && (
-                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-black text-white text-xs rounded-lg max-w-64 z-10">
-                  {(globalMarketData.indicatorExplanations as any)[vol.name]?.oneLine || '이 지표에 대한 설명을 준비중입니다.'}
-                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-black"></div>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* 섹션 E — AI 요약 인사이트 */}
-      <div className="bg-gradient-to-br from-purple-50 to-indigo-50 rounded-xl p-6 mb-6">
-        <h4 className="text-lg font-bold text-purple-900 mb-4 flex items-center">
-          🤖 AI 종합 인사이트
-        </h4>
-        <div className="space-y-3">
-          {globalMarketData.insights.map((insight, index) => (
-            <div key={index} className="flex items-start">
-              <span className={`inline-block w-2 h-2 rounded-full mt-2 mr-3 ${
-                insight.category === '결론' ? 'bg-purple-500' : 'bg-blue-500'
-              }`}></span>
-              <div>
-                <span className="font-semibold text-purple-800 text-sm">{insight.category}: </span>
-                <span className="text-purple-700 text-sm">{insight.text}</span>
               </div>
             </div>
-          ))}
-        </div>
-      </div>
 
-      {/* 하단 고정 CTA */}
-      <div className="bg-gradient-to-r from-green-500 to-blue-600 rounded-xl p-6 text-white text-center mb-6">
-        <div className="text-2xl mb-3">⚖️</div>
-        <h3 className="text-xl font-bold mb-2">자산배분으로 반영하기</h3>
-        <p className="text-green-100 mb-4">
-          글로벌 시장 분석을 바탕으로 데이비드가<br />
-          맞춤형 자산배분 전략을 제시합니다.
-        </p>
-        <div className="flex justify-center gap-2 mb-4">
-          <span className="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm">
-            {userProfile.type}
-          </span>
-          <span className="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm">
-            {aiLevel === 'reference' ? '참고형' : aiLevel === 'collaboration' ? '협업형' : '가이드형'}
-          </span>
-        </div>
-      </div>
+            <div className="relative bg-gradient-to-br from-slate-800/80 to-yellow-900/80 backdrop-blur-xl rounded-2xl p-4 md:p-6 border border-white/10 shadow-xl">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-yellow-500/5 rounded-2xl"></div>
+              <div className="relative z-10">
+                <h3 className="text-base md:text-lg font-bold text-white mb-4">📊 채권 동향</h3>
+                <div className="bg-gradient-to-r from-yellow-900/40 to-amber-900/40 rounded-xl p-3 md:p-4 mb-4 border-l-4 border-amber-400">
+                  <div className="flex flex-col md:flex-row md:items-start space-y-3 md:space-y-0 md:space-x-3">
+                    <div className="bg-amber-500/20 rounded-full p-2 self-start">
+                      <span className="text-amber-300 text-lg">📈</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-amber-100 font-bold mb-3 text-sm md:text-base">금리 하락이 주는 기회</h4>
+                      <div className="space-y-3">
+                        <div className="bg-amber-800/20 rounded-lg p-3 border border-amber-500/20">
+                          <div className="flex items-center mb-2 flex-wrap">
+                            <span className="text-yellow-400 mr-2">📉</span>
+                            <span className="text-white font-medium text-xs md:text-sm">미국 금리 하락 중</span>
+                          </div>
+                          <p className="text-amber-200 text-xs leading-relaxed">
+                            앞으로 미국 중앙은행이 <span className="text-amber-300 font-medium">금리를 더 내릴 가능성</span>이 높아지고 있어요
+                          </p>
+                        </div>
+                        <div className="bg-yellow-800/20 rounded-lg p-3 border border-yellow-500/20">
+                          <div className="flex items-center mb-2 flex-wrap">
+                            <span className="text-green-400 mr-2">🚀</span>
+                            <span className="text-white font-medium text-xs md:text-sm">주식에 유리한 환경</span>
+                          </div>
+                          <p className="text-yellow-200 text-xs leading-relaxed">
+                            금리가 내리면 <span className="text-yellow-300 font-medium">주식에 돈이 몰리는</span> 경향이 있어 투자에 유리합니다
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  {globalMarketData.bonds.map((bond, index) => (
+                    <div key={index} className="flex justify-between items-center p-3 bg-slate-700/50 rounded-lg border border-yellow-400/20">
+                      <div>
+                        <div className="font-medium text-white">{bond.name}</div>
+                        <div className="text-xs text-yellow-300">{bond.label}</div>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-bold text-yellow-400">{bond.value}</div>
+                        <div className={`text-xs ${getTrendColor(bond.trend)}`}>{bond.change}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
 
-      {/* 하단 네비게이션 */}
-      <div className="flex flex-col sm:flex-row justify-between gap-3">
-        <button
-          onClick={onPrevious}
-          className="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors w-full sm:w-auto"
-        >
-          ← 이전
-        </button>
-        <button
-          onClick={handleNext}
-          className="bg-gradient-to-r from-green-600 to-blue-600 text-white px-6 py-3 rounded-lg hover:from-green-700 hover:to-blue-700 transition-all transform hover:scale-105 w-full sm:w-auto font-semibold"
-        >
-          자산배분 받기 →
-        </button>
-      </div>
+          {/* Commodities & Crypto */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+            <div className="relative bg-gradient-to-br from-slate-800/80 to-orange-900/80 backdrop-blur-xl rounded-2xl p-4 md:p-6 border border-white/10 shadow-xl">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-orange-500/5 rounded-2xl"></div>
+              <div className="relative z-10">
+                <h3 className="text-base md:text-lg font-bold text-white mb-4">🏛️ 원자재 동향</h3>
+                <div className="bg-gradient-to-r from-orange-900/40 to-red-900/40 rounded-xl p-3 md:p-4 mb-4 border-l-4 border-orange-400">
+                  <div className="flex flex-col md:flex-row md:items-start space-y-3 md:space-y-0 md:space-x-3">
+                    <div className="bg-orange-500/20 rounded-full p-2 self-start">
+                      <span className="text-orange-300 text-lg">🏛️</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-orange-100 font-bold mb-3 text-sm md:text-base">원자재 시장 동향</h4>
+                      <div className="grid gap-3">
+                        <div className="bg-yellow-800/30 rounded-lg p-3 border border-yellow-500/20">
+                          <div className="flex items-center mb-2 flex-wrap">
+                            <span className="text-yellow-400 mr-2">🏆</span>
+                            <span className="text-white font-medium text-xs md:text-sm">금 가격 상승</span>
+                          </div>
+                          <p className="text-yellow-200 text-xs leading-relaxed">
+                            경제 불안할 때 <span className="text-yellow-300 font-medium">안전자산</span> 역할을 하는 금이 상승 중
+                          </p>
+                        </div>
+                        <div className="bg-orange-800/30 rounded-lg p-3 border border-orange-500/20">
+                          <div className="flex items-center mb-2 flex-wrap">
+                            <span className="text-orange-400 mr-2">⛽</span>
+                            <span className="text-white font-medium text-xs md:text-sm">석유 가격 상승</span>
+                          </div>
+                          <p className="text-orange-200 text-xs leading-relaxed">
+                            <span className="text-orange-300 font-medium">글로벌 경제 회복 기대감</span>을 반영한 상승세
+                          </p>
+                        </div>
+                        <div className="bg-red-800/20 rounded-lg p-3 border border-red-500/20">
+                          <div className="flex items-center mb-1 flex-wrap">
+                            <span className="text-red-400 mr-2">📈</span>
+                            <span className="text-white font-medium text-xs md:text-sm">투자 기회</span>
+                          </div>
+                          <p className="text-red-200 text-xs">원자재 관련 주식이나 ETF 고려</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  {globalMarketData.commodities.map((commodity, index) => (
+                    <div key={index} className="flex justify-between items-center p-3 bg-slate-700/50 rounded-lg border border-orange-400/20">
+                      <div className="flex items-center">
+                        <span className="text-xl mr-2">{commodity.icon}</span>
+                        <div>
+                          <div className="font-medium text-white">{commodity.name}</div>
+                          <div className="text-xs text-orange-300">{commodity.label}</div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-bold text-orange-400">{commodity.value}</div>
+                        <div className={`text-xs ${getTrendColor(commodity.trend)}`}>{commodity.change}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
 
-      {/* AI 지표 설명 상세 모달 */}
-      {detailModal.isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          {/* 배경 오버레이 */}
-          <div
-            className="absolute inset-0 bg-black bg-opacity-50"
-            onClick={closeDetailModal}
-          />
+            <div className="relative bg-gradient-to-br from-slate-800/80 to-purple-900/80 backdrop-blur-xl rounded-2xl p-4 md:p-6 border border-white/10 shadow-xl">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-purple-500/5 rounded-2xl"></div>
+              <div className="relative z-10">
+                <h3 className="text-base md:text-lg font-bold text-white mb-4">₿ 암호화폐 동향</h3>
+                <div className="bg-gradient-to-r from-purple-900/40 to-indigo-900/40 rounded-xl p-3 md:p-4 mb-4 border-l-4 border-purple-400">
+                  <div className="flex flex-col md:flex-row md:items-start space-y-3 md:space-y-0 md:space-x-3">
+                    <div className="bg-purple-500/20 rounded-full p-2 self-start">
+                      <span className="text-purple-300 text-lg">₿</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-purple-100 font-bold mb-3 text-sm md:text-base">암호화폐 시장 동향</h4>
+                      <div className="space-y-3">
+                        <div className="bg-purple-800/20 rounded-lg p-3 border border-purple-500/20">
+                          <div className="flex items-center mb-2 flex-wrap">
+                            <span className="text-green-400 mr-2">🚀</span>
+                            <span className="text-white font-medium text-xs md:text-sm">비트코인 상승세</span>
+                          </div>
+                          <p className="text-purple-200 text-xs leading-relaxed">
+                            투자자들이 <span className="text-purple-300 font-medium">위험자산에 대한 선호도</span>가 높아졌다는 신호
+                          </p>
+                        </div>
+                        <div className="bg-red-800/20 rounded-lg p-3 border border-red-500/20">
+                          <div className="flex items-center mb-2 flex-wrap">
+                            <span className="text-yellow-400 mr-2">⚠️</span>
+                            <span className="text-white font-medium text-xs md:text-sm">주의사항</span>
+                          </div>
+                          <p className="text-red-200 text-xs leading-relaxed">
+                            암호화폐는 <span className="text-red-300 font-medium">변동성이 매우 크니</span> 신중한 투자 필요
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  {globalMarketData.crypto.map((crypto, index) => (
+                    <div key={index} className="flex justify-between items-center p-3 bg-slate-700/50 rounded-lg border border-purple-400/20">
+                      <div className="flex items-center">
+                        <span className="text-xl mr-2">{crypto.icon}</span>
+                        <div>
+                          <div className="font-medium text-white">{crypto.name}</div>
+                          <div className="text-xs text-purple-300">{crypto.label}</div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-bold text-purple-400">{crypto.value}</div>
+                        <div className={`text-xs ${getTrendColor(crypto.trend)}`}>{crypto.change}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
 
-          {/* 모달 컨텐츠 */}
-          <div className="relative bg-white rounded-xl p-6 max-w-md w-full mx-4 shadow-2xl">
-            <div className="flex justify-between items-start mb-4">
-              <h3 className="text-lg font-bold text-gray-900 flex items-center">
-                📈 {detailModal.indicator} 설명
+          {/* Volatility Indicators */}
+          <div className="relative bg-gradient-to-br from-slate-800/80 to-red-900/80 backdrop-blur-xl rounded-2xl p-6 border border-white/10 shadow-xl">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-red-500/5 rounded-2xl"></div>
+            <div className="relative z-10">
+              <h3 className="text-lg font-bold text-white mb-4">📈 시장 안정성 체크</h3>
+              <div className="bg-gradient-to-r from-red-900/40 to-pink-900/40 rounded-xl p-5 mb-4 border-l-4 border-pink-400">
+                <div className="flex items-start space-x-3">
+                  <div className="bg-pink-500/20 rounded-full p-2 mt-1">
+                    <span className="text-pink-300 text-lg">📊</span>
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-pink-100 font-bold text-lg mb-3 flex items-center">
+                      <span className="mr-2">�</span>
+                      지금 시장은 어떤 상황인가요?
+                    </h4>
+                    <div className="grid gap-3">
+                      <div className="bg-green-800/20 rounded-lg p-4 border border-green-500/30">
+                        <div className="flex items-center mb-2">
+                          <span className="text-green-400 text-xl mr-3">✅</span>
+                          <span className="text-white font-semibold">안정적인 시장</span>
+                        </div>
+                        <p className="text-green-100 text-sm leading-relaxed ml-8">
+                          VIX(공포지수)가 <span className="text-green-300 font-medium">16.2로 낮은 수준</span>을 유지하고 있어 시장이 비교적 안정적입니다.
+                        </p>
+                      </div>
+                      <div className="bg-blue-800/20 rounded-lg p-4 border border-blue-500/30">
+                        <div className="flex items-center mb-2">
+                          <span className="text-blue-400 text-xl mr-3">📋</span>
+                          <span className="text-white font-semibold">채권과 신용 시장 양호</span>
+                        </div>
+                        <p className="text-blue-100 text-sm leading-relaxed ml-8">
+                          채권 변동성과 신용 스프레드가 모두 <span className="text-blue-300 font-medium">낮은 수준</span>을 유지하고 있어요.
+                        </p>
+                      </div>
+                      <div className="bg-yellow-800/20 rounded-lg p-4 border border-yellow-500/30">
+                        <div className="flex items-center mb-2">
+                          <span className="text-yellow-400 text-xl mr-3">📈</span>
+                          <span className="text-white font-semibold">투자하기 좋은 환경</span>
+                        </div>
+                        <p className="text-yellow-100 text-sm leading-relaxed ml-8">
+                          다만 너무 안주하지 말고 <span className="text-yellow-300 font-medium">시장 변화를 계속 지켜봐야</span> 합니다.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+                {globalMarketData.volatility.map((vol, index) => (
+                  <div key={index} className="bg-slate-700/50 rounded-xl p-3 md:p-4 border border-red-400/20">
+                    <div className="text-center">
+                      <h4 className="font-semibold text-white mb-1 text-sm md:text-base">{vol.name}</h4>
+                      <div className="text-xl md:text-2xl font-bold text-red-400 mb-2">{vol.value}</div>
+                      <div className={`px-2 md:px-3 py-1 rounded-full text-xs font-medium border ${
+                        vol.color === 'green' ? 'bg-green-500/20 text-green-300 border-green-400/30' :
+                        vol.color === 'yellow' ? 'bg-yellow-500/20 text-yellow-300 border-yellow-400/30' :
+                        'bg-red-500/20 text-red-300 border-red-400/30'
+                      }`}>
+                        {vol.status}
+                      </div>
+                      <div className="text-xs text-red-200 mt-2">{vol.label}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* AI 종합 판단 - 마지막 섹션 */}
+          <div className="relative bg-gradient-to-r from-purple-900/50 to-pink-900/50 backdrop-blur-xl rounded-2xl p-4 md:p-6 border border-purple-400/30 shadow-xl">
+            <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-purple-500/10 rounded-2xl"></div>
+            <div className="relative z-10">
+              <h3 className="text-xl md:text-2xl font-bold text-white mb-4 flex items-center justify-center">
+                <span className="mr-3">🤖</span>
+                AI 종합 판단
               </h3>
-              <button
-                onClick={closeDetailModal}
-                className="text-gray-400 hover:text-gray-600 text-xl"
-              >
-                ×
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              <div className="bg-blue-50 rounded-lg p-4">
-                <h4 className="font-semibold text-blue-800 mb-2">한줄 요약</h4>
-                <p className="text-blue-700 text-sm leading-relaxed">
-                  {detailModal.content.oneLine}
-                </p>
+              
+              {/* 전체 추천 */}
+              <div className="text-center mb-6">
+                <div className="text-lg md:text-xl font-bold text-emerald-400 mb-3 leading-relaxed">{globalMarketData.aiSummary}</div>
+                <span className={`px-4 md:px-6 py-3 rounded-full text-sm md:text-base font-bold border-2 ${getPositionBadgeColor(globalMarketData.position)}`}>
+                  {globalMarketData.position} 추천
+                </span>
               </div>
 
-              <div className="bg-gray-50 rounded-lg p-4">
-                <h4 className="font-semibold text-gray-800 mb-2">조금 더 자세히</h4>
-                <p className="text-gray-700 text-sm leading-relaxed">
-                  {detailModal.content.detailed}
-                </p>
+              {/* 종합 분석 요약 */}
+              <div className="bg-slate-800/50 rounded-xl p-4 md:p-6 border border-purple-300/20">
+                <h4 className="text-purple-200 font-bold text-lg md:text-xl mb-4 flex items-center justify-center">
+                  <span className="mr-2">📋</span>
+                  마쿠스의 핵심 요약
+                </h4>
+                
+                <div className="grid gap-4 md:gap-6">
+                  {/* 긍정적 요인들 */}
+                  <div className="bg-green-900/30 rounded-lg p-4 border-l-4 border-green-400">
+                    <div className="flex items-center mb-3">
+                      <span className="text-green-400 text-xl mr-3">✅</span>
+                      <span className="text-green-100 font-semibold text-base md:text-lg">투자에 유리한 환경</span>
+                    </div>
+                    <ul className="text-green-200 text-sm space-y-2 ml-6">
+                      <li>• 글로벌 주식 시장 상승세 (미국 나스닥 +2.3%, 한국 코스피 +2.1%)</li>
+                      <li>• 달러 약세로 수출기업 및 해외투자 유리</li>
+                      <li>• 미국 금리 하락 기대감으로 주식 투자 환경 개선</li>
+                      <li>• 시장 안정성 지표(VIX 16.2) 양호한 수준</li>
+                    </ul>
+                  </div>
+
+                  {/* 주목할 섹터 */}
+                  <div className="bg-blue-900/30 rounded-lg p-4 border-l-4 border-blue-400">
+                    <div className="flex items-center mb-3">
+                      <span className="text-blue-400 text-xl mr-3">🎯</span>
+                      <span className="text-blue-100 font-semibold text-base md:text-lg">주목할 투자 섹터</span>
+                    </div>
+                    <ul className="text-blue-200 text-sm space-y-2 ml-6">
+                      <li>• <span className="text-blue-300 font-medium">반도체 & IT 기술주</span> - 글로벌 성장세 지속</li>
+                      <li>• <span className="text-blue-300 font-medium">원자재 관련 주식/ETF</span> - 금, 석유 가격 상승</li>
+                      <li>• <span className="text-blue-300 font-medium">수출 중심 기업</span> - 달러 약세 수혜</li>
+                    </ul>
+                  </div>
+
+                  {/* 주의사항 */}
+                  <div className="bg-yellow-900/30 rounded-lg p-4 border-l-4 border-yellow-400">
+                    <div className="flex items-center mb-3">
+                      <span className="text-yellow-400 text-xl mr-3">⚠️</span>
+                      <span className="text-yellow-100 font-semibold text-base md:text-lg">투자시 주의사항</span>
+                    </div>
+                    <ul className="text-yellow-200 text-sm space-y-2 ml-6">
+                      <li>• 암호화폐는 높은 변동성으로 신중한 접근 필요</li>
+                      <li>• 시장이 안정적이지만 지속적인 모니터링 중요</li>
+                      <li>• 분산투자를 통한 리스크 관리 권장</li>
+                    </ul>
+                  </div>
+
+                  {/* 최종 결론 */}
+                  <div className="bg-purple-900/40 rounded-lg p-4 md:p-6 border border-purple-400/40">
+                    <div className="flex items-center mb-3">
+                      <span className="text-purple-400 text-xl mr-3">🔮</span>
+                      <span className="text-purple-100 font-bold text-base md:text-lg">최종 결론</span>
+                    </div>
+                    <p className="text-purple-200 text-sm md:text-base leading-relaxed">
+                      현재 글로벌 시장은 <span className="text-purple-300 font-semibold">전반적으로 긍정적인 투자 환경</span>을 보이고 있습니다. 
+                      특히 기술주와 원자재 섹터에 대한 선별적 투자를 고려하되, 
+                      <span className="text-purple-300 font-semibold">분산투자 원칙</span>을 지켜 안정적인 포트폴리오를 구성하는 것이 좋겠습니다.
+                    </p>
+                  </div>
+
+                  {/* 마쿠스의 서명 */}
+                  <div className="text-center mt-6">
+                    <div className="bg-slate-700/50 rounded-lg p-4 border border-emerald-400/30">
+                      <div className="flex items-center justify-center mb-2">
+                        <span className="text-emerald-400 text-lg mr-2">💬</span>
+                        <span className="text-emerald-200 font-semibold">마쿠스의 마지막 메시지</span>
+                      </div>
+                      <p className="text-emerald-100 text-sm italic">
+                        "투자는 마라톤이지 단거리 달리기가 아닙니다. 안정적이고 지속 가능한 수익을 만들어가세요!"
+                      </p>
+                      <div className="text-emerald-300 font-medium mt-2">
+                        - 시장전략가 마쿠스 -
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
+          </div>
 
-            <div className="mt-6 pt-4 border-t border-gray-200">
+          {/* Navigation */}
+          <div className="relative bg-gradient-to-r from-slate-800/90 to-purple-900/90 backdrop-blur-xl rounded-2xl p-3 md:p-4 border border-white/10 shadow-xl">
+            <div className="flex flex-col sm:flex-row justify-between gap-3 sm:gap-0">
               <button
-                onClick={closeDetailModal}
-                className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
+                onClick={onPrevious}
+                className="bg-gradient-to-r from-slate-600 to-slate-700 text-white px-4 md:px-6 py-2 md:py-3 rounded-xl hover:from-slate-700 hover:to-slate-800 transition-all duration-200 font-medium border border-slate-500/50 shadow-lg text-sm md:text-base"
               >
-                닫기
+                ← 이전
               </button>
-            </div>
-            
-            <div className="mt-2 text-center">
-              <p className="text-xs text-gray-500 italic">
-                &quot;AI가 복잡한 지표를 쉬운 말로 설명해드립니다&quot;
-              </p>
+              <button
+                onClick={handleNext}
+                className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 md:px-6 py-2 md:py-3 rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-200 font-medium transform hover:scale-105 active:scale-95 shadow-lg border border-purple-500/50 text-sm md:text-base"
+              >
+                다음 단계 →
+              </button>
             </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   )
 }

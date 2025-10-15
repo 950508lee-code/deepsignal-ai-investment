@@ -62,20 +62,20 @@ export default function Home() {
   const CurrentStepComponent = steps[currentStep].component
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* 진행률 표시 바 */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-sm border-b border-gray-200">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-slate-800/90 backdrop-blur-sm border-b border-white/10">
         <div className="h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-indigo-500" 
              style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}></div>
         <div className="px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 animate-pulse"></div>
-              <span className="text-sm font-medium text-gray-700">
+              <div className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 animate-pulse"></div>
+              <span className="text-sm font-medium text-white">
                 {steps[currentStep].title}
               </span>
             </div>
-            <div className="text-xs text-gray-500 font-medium">
+            <div className="text-xs text-purple-300 font-medium">
               {currentStep + 1} / {steps.length}
             </div>
           </div>

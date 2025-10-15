@@ -1,26 +1,44 @@
+'use client';
+
+import { useState } from 'react';
+
 interface InvestmentAnalysisStepProps {
   onNext: (data?: any) => void
   onPrevious: () => void
   userData: any
 }
 
-export default function InvestmentAnalysisStep({ onNext, onPrevious, userData }: InvestmentAnalysisStepProps) {
-  const consultantData = userData.consultantData || {}
-  
-  // 텍스트 변환 헬퍼 함수들
-  const getInvestmentAmountText = (amount: string) => {
-    switch(amount) {
-      case 'under1000': return '1천만원 미만'
-      case '1000-3000': return '1천-3천만원'
-      case '3000-5000': return '3천-5천만원'
-      case '5000-10000': return '5천만원-1억원'
-      case 'over10000': return '1억원 이상'
-      default: return '미설정'
-    }
-  }
+interface InvestmentProfileData {
+  riskTolerance: string
+  investmentGoal: string
+  timeHorizon: string
+  financialSituation: string
+  investmentExperience: string
+  marketViewpoint: string
+  emotionalResponse: string
+  diversificationPreference: string
+}
 
-  const getInvestmentExperienceText = (experience: string) => {
-    switch(experience) {
+export default function InvestmentAnalysisStep({ onNext, onPrevious, userData }: InvestmentAnalysisStepProps) {
+  const [currentQuestion, setCurrentQuestion] = useState(0)
+  const [answers, setAnswers] = useState<InvestmentProfileData>({
+    riskTolerance: '',
+    investmentGoal: '',
+    timeHorizon: '',
+    financialSituation: '',
+    investmentExperience: '',
+    marketViewpoint: '',
+    emotionalResponse: '',
+    diversificationPreference: ''
+  })
+  const [showResult, setShowResult] = useState(false)
+
+  // 소피아로부터 받은 기본 정보
+  const consultantData = userData || {}
+
+  // 투자 경험 텍스트 변환
+  const getExperienceText = (exp: string) => {
+    switch(exp) {
       case 'none': return '투자 경험 없음'
       case 'beginner': return '초보자 (예적금, 펀드)'
       case 'intermediate': return '중급자 (주식, ETF)'
@@ -30,582 +48,471 @@ export default function InvestmentAnalysisStep({ onNext, onPrevious, userData }:
     }
   }
 
-  const getInvestmentPeriodText = (period: string) => {
-    switch(period) {
-      case 'short': return '1년 미만 (단기)'
-      case 'medium': return '1-3년 (중기)'
-      case 'long': return '3-5년 (장기)'
-      case 'verylong': return '5년 이상 (초장기)'
+  // 투자 금액 텍스트 변환
+  const getAmountText = (amount: string) => {
+    switch(amount) {
+      case 'under500': return '500만원 미만'
+      case '500-1000': return '500만원-1천만원'
+      case '1000-3000': return '1천만원-3천만원'
+      case '3000-5000': return '3천만원-5천만원'
+      case '5000-10000': return '5천만원-1억원'
+      case 'over10000': return '1억원 이상'
       default: return '미설정'
     }
   }
 
-  const getInvestmentGoalText = (goal: string) => {
-    switch(goal) {
-      case 'retirement': return '은퇴 준비'
-      case 'wealth': return '자산 증식'
-      case 'income': return '부수입 창출'
-      case 'education': return '교육비 마련'
-      case 'house': return '주택 구입'
-      case 'emergency': return '비상금 마련'
-      case 'business': return '사업 자금'
-      default: return '미설정'
+  const questions = [
+    {
+      id: 'riskTolerance',
+      question: '투자에서 손실이 발생한다면 어떻게 반응하시겠습니까?',
+      description: '투자 시 발생할 수 있는 손실에 대한 귀하의 태도를 알려주세요.',
+      options: [
+        { value: 'conservative', label: '즉시 손실을 확정하고 안전한 자산으로 이동', emoji: '🛡️' },
+        { value: 'moderate-conservative', label: '일부만 매도하고 나머지는 회복을 기다림', emoji: '⚖️' },
+        { value: 'moderate-aggressive', label: '현재 포지션을 유지하며 시장 회복을 기다림', emoji: '📊' },
+        { value: 'aggressive', label: '추가 매수로 평균 단가를 낮춤', emoji: '🚀' }
+      ]
+    },
+    {
+      id: 'investmentGoal',
+      question: '주요 투자 목표는 무엇입니까?',
+      description: '투자를 통해 달성하고자 하는 목표를 선택해주세요.',
+      options: [
+        { value: 'capital-preservation', label: '원금 보존 (인플레이션 대응)', emoji: '🏦' },
+        { value: 'steady-income', label: '안정적인 수익 창출', emoji: '💰' },
+        { value: 'balanced-growth', label: '자산 증식과 안정성의 균형', emoji: '📈' },
+        { value: 'aggressive-growth', label: '적극적인 자산 증식', emoji: '🎯' }
+      ]
+    },
+    {
+      id: 'timeHorizon',
+      question: '투자 기간은 얼마나 계획하고 계십니까?',
+      description: '투자한 자금을 사용할 예정 시기를 알려주세요.',
+      options: [
+        { value: 'short', label: '1년 이내', emoji: '⏰' },
+        { value: 'medium-short', label: '1-3년', emoji: '📅' },
+        { value: 'medium-long', label: '3-7년', emoji: '🗓️' },
+        { value: 'long', label: '7년 이상', emoji: '⏳' }
+      ]
+    },
+    {
+      id: 'financialSituation',
+      question: '현재 재정 상황은 어떠신가요?',
+      description: '투자금 외에 비상자금과 안정적인 소득이 있는지 알려주세요.',
+      options: [
+        { value: 'stable-surplus', label: '안정적 소득과 충분한 비상자금 보유', emoji: '✅' },
+        { value: 'stable-adequate', label: '안정적 소득과 적정 비상자금 보유', emoji: '👍' },
+        { value: 'moderate', label: '보통 수준의 소득과 비상자금', emoji: '⚡' },
+        { value: 'tight', label: '여유자금이 많지 않은 상황', emoji: '⚠️' }
+      ]
+    },
+    {
+      id: 'investmentExperience',
+      question: '투자 경험은 어느 정도이신가요?',
+      description: '금융 상품 투자 경험과 지식 수준을 알려주세요.',
+      options: [
+        { value: 'beginner', label: '예적금, 펀드 정도의 경험', emoji: '🌱' },
+        { value: 'intermediate', label: '주식, ETF 투자 경험 보유', emoji: '📚' },
+        { value: 'advanced', label: '다양한 금융상품 투자 경험', emoji: '🎓' },
+        { value: 'expert', label: '전문적인 투자 지식과 풍부한 경험', emoji: '👨‍💼' }
+      ]
+    },
+    {
+      id: 'marketViewpoint',
+      question: '시장 변동성에 대한 관점은 어떠신가요?',
+      description: '주식시장의 상승과 하락에 대한 귀하의 생각을 알려주세요.',
+      options: [
+        { value: 'opportunity', label: '변동성은 기회다 - 적극 활용', emoji: '🎪' },
+        { value: 'manageable', label: '관리 가능한 위험 - 신중하게 대응', emoji: '🎛️' },
+        { value: 'concerning', label: '우려스러운 요소 - 최소화 필요', emoji: '😟' },
+        { value: 'avoid', label: '피해야 할 위험 - 안정성 우선', emoji: '🚫' }
+      ]
+    },
+    {
+      id: 'emotionalResponse',
+      question: '투자 손실 시 감정적 반응은 어떠신가요?',
+      description: '포트폴리오 가치가 하락할 때의 심리적 상태를 선택해주세요.',
+      options: [
+        { value: 'calm', label: '냉정하게 분석하고 논리적으로 판단', emoji: '🧘‍♂️' },
+        { value: 'concerned', label: '걱정되지만 계획대로 진행', emoji: '😐' },
+        { value: 'anxious', label: '불안하여 자주 확인하게 됨', emoji: '😰' },
+        { value: 'panic', label: '매우 스트레스받아 잠을 못 잠', emoji: '😱' }
+      ]
+    },
+    {
+      id: 'diversificationPreference',
+      question: '투자 분산에 대한 선호도는 어떠신가요?',
+      description: '포트폴리오 구성 방식에 대한 선호를 알려주세요.',
+      options: [
+        { value: 'concentrated', label: '확신 있는 소수 종목에 집중 투자', emoji: '🎯' },
+        { value: 'focused', label: '관심 섹터/테마 중심의 선택적 분산', emoji: '🔍' },
+        { value: 'balanced', label: '적절한 분산으로 리스크 관리', emoji: '⚖️' },
+        { value: 'diversified', label: '광범위한 분산으로 안정성 추구', emoji: '🌐' }
+      ]
     }
-  }
+  ]
 
-  const getAILevelText = (level: string) => {
-    switch(level) {
-      case 'reference': return '참고형'
-      case 'collaboration': return '협업형'
-      case 'delegation': return '위임형'
-      default: return '미설정'
-    }
-  }
-  
-  // 투자 MBTI 프로파일 생성
-  const getInvestmentMBTI = () => {
-    const {
-      informationSource,
-      decisionResponse,
-      externalVariableResponse,
-      lossResponse,
-      profitResponse,
-      importantFactor,
-      aiInvolvementLevel
-    } = consultantData
-
-    // 정보 처리 방식 (I: 내향적 vs E: 외향적)
-    let infoType = 'I' // 기본값
-    if (informationSource === 'community' || informationSource === 'expert-advice' || informationSource === 'multiple-sources') {
-      infoType = 'E' // 외부 정보 적극 활용
-    } else if (informationSource === 'self-analysis') {
-      infoType = 'I' // 내적 분석 선호
-    }
-
-    // 의사결정 방식 (S: 감각형 vs N: 직관형)
-    let decisionType = 'S' // 기본값
-    if (decisionResponse === 'data-analysis') {
-      decisionType = 'S' // 구체적 데이터 기반
-    } else if (decisionResponse === 'wait-observe' || externalVariableResponse === 'long-term-view') {
-      decisionType = 'N' // 직관적 장기 관점
-    }
-
-    // 감정 vs 논리 (T: 사고형 vs F: 감정형)
-    let emotionType = 'T' // 기본값
-    if (decisionResponse === 'emotional') {
-      emotionType = 'F' // 감정적 대응
-    } else if (decisionResponse === 'data-analysis') {
-      emotionType = 'T' // 논리적 분석
-    }
-
-    // 계획성 (J: 판단형 vs P: 인식형)
-    let planType = 'J' // 기본값
-    if (aiInvolvementLevel === 'guide' || externalVariableResponse === 'long-term-view') {
-      planType = 'J' // 체계적 접근
-    } else if (externalVariableResponse === 'opportunity-seek') {
-      planType = 'P' // 유연한 접근
-    }
-
-    const mbtiCode = infoType + decisionType + emotionType + planType
-
-    // MBTI별 투자 성향 매핑
-    const mbtiProfiles: { [key: string]: { type: string; desc: string } } = {
-      'ISTJ': { type: '신중형 안정추구자', desc: '체계적이고 신중한 장기 투자를 선호하며, 검증된 투자처에 집중' },
-      'ISFJ': { type: '보수형 수익추구자', desc: '안정성을 최우선으로 하되, 꾸준한 수익 창출을 목표로 하는 신중한 투자자' },
-      'INFJ': { type: '직관형 가치투자자', desc: '장기적 관점에서 가치 있는 투자처를 발굴하는 통찰력 있는 투자자' },
-      'INTJ': { type: '전략형 성장투자자', desc: '체계적인 분석을 바탕으로 장기 성장 가능성이 높은 투자처를 선택' },
-      'ISTP': { type: '실용형 기회포착자', desc: '데이터를 바탕으로 실용적 판단을 내리며, 기회가 오면 과감히 투자' },
-      'ISFP': { type: '감성형 균형투자자', desc: '개인적 가치와 감정을 고려하여 균형 잡힌 포트폴리오를 구성' },
-      'INFP': { type: '이상형 장기투자자', desc: '본인의 가치관에 맞는 투자처를 찾아 장기적으로 투자하는 성향' },
-      'INTP': { type: '분석형 탐구투자자', desc: '깊이 있는 분석을 통해 새로운 투자 기회를 발굴하는 것을 선호' },
-      'ESTP': { type: '적극형 단기투자자', desc: '시장 흐름을 빠르게 파악하여 단기 수익 기회를 적극적으로 포착' },
-      'ESFP': { type: '활동형 트렌드추종자', desc: '시장 트렌드와 대중의 관심사를 반영한 투자를 선호' },
-      'ENFP': { type: '열정형 성장추구자', desc: '새로운 성장 동력과 혁신적인 투자처에 대한 열정적 투자' },
-      'ENTP': { type: '혁신형 기회창조자', desc: '창의적이고 혁신적인 투자 아이디어를 통해 새로운 기회를 창출' },
-      'ESTJ': { type: '리더형 체계투자자', desc: '체계적인 포트폴리오 관리를 통해 안정적이면서도 성장성 있는 투자 추구' },
-      'ESFJ': { type: '협력형 안정투자자', desc: '전문가 조언을 적극 활용하여 안정적이고 지속가능한 투자 전략 수립' },
-      'ENFJ': { type: '비전형 가치창조자', desc: '사회적 가치와 장기적 비전을 고려한 책임감 있는 투자를 선호' },
-      'ENTJ': { type: '전략형 수익극대화자', desc: '명확한 목표 설정과 전략적 접근을 통해 수익 극대화를 추구하는 리더형 투자자' }
-    }
-
-    return mbtiProfiles[mbtiCode] || { type: '균형형 투자자', desc: '다양한 투자 성향을 균형있게 보유한 투자자' }
-  }
-
-  // 실제 상담 데이터를 기반으로 한 개인화된 AI 분석
-  const getPersonalizedAnalysis = () => {
-    const {
-      investmentAmount,
-      investmentExperience,
-      investmentPeriod,
-      investmentGoal,
-      lossResponse,
-      profitResponse,
-      importantFactor,
-      newsFrequency,
-      aiInvolvementLevel
-    } = consultantData
-
-    // 투자 성향 종합 분석
-    let riskScore = 0
-    let riskType = '균형투자형'
-    let personalizedAnalysis = ''
-
-    // 손실 대응 방식 분석
-    if (lossResponse === 'panic-sell') riskScore += 1
-    else if (lossResponse === 'partial-sell') riskScore += 2
-    else if (lossResponse === 'hold') riskScore += 3
-    else if (lossResponse === 'buy-more') riskScore += 4
-
-    // 수익 대응 방식 분석
-    if (profitResponse === 'sell-all') riskScore += 1
-    else if (profitResponse === 'sell-half') riskScore += 2
-    else if (profitResponse === 'hold-all') riskScore += 3
-    else if (profitResponse === 'buy-more') riskScore += 4
-
-    // 중요 요소 분석
-    if (importantFactor === 'preserve') riskScore += 1
-    else if (importantFactor === 'stable') riskScore += 2
-    else if (importantFactor === 'balance') riskScore += 3
-    else if (importantFactor === 'growth') riskScore += 4
-    else if (importantFactor === 'aggressive') riskScore += 5
-
-    // 위험 성향 결정
-    if (riskScore <= 6) {
-      riskType = '안전추구형'
-    } else if (riskScore <= 10) {
-      riskType = '균형투자형'
+  const handleAnswer = (value: string) => {
+    const questionId = questions[currentQuestion].id as keyof InvestmentProfileData
+    setAnswers(prev => ({ ...prev, [questionId]: value }))
+    
+    if (currentQuestion < questions.length - 1) {
+      setTimeout(() => setCurrentQuestion(prev => prev + 1), 300)
     } else {
-      riskType = '적극투자형'
+      setTimeout(() => setShowResult(true), 300)
     }
+  }
 
-    // 개인화된 분석 생성
-    const getAmountText = () => {
-      switch(investmentAmount) {
-        case 'under1000': return '1천만원 미만의 소액'
-        case '1000-3000': return '1천-3천만원의 중간 규모'
-        case '3000-5000': return '3천-5천만원의 상당한 규모'
-        case '5000-10000': return '5천만원-1억원의 큰 규모'
-        case 'over10000': return '1억원 이상의 대규모'
-        default: return ''
-      }
-    }
-
-    const getExperienceText = () => {
-      switch(investmentExperience) {
-        case 'none': return '투자 경험이 없는 완전 초보자'
-        case 'beginner': return '예적금과 펀드 정도의 경험을 가진 초보 투자자'
-        case 'intermediate': return '주식과 ETF 투자 경험이 있는 중급 투자자'
-        case 'advanced': return '옵션, 선물 등 파생상품까지 경험한 숙련된 투자자'
-        case 'expert': return '포트폴리오 관리와 다양한 자산군 투자 경험을 가진 전문 투자자'
-        default: return ''
-      }
-    }
-
-    const getPeriodText = () => {
-      switch(investmentPeriod) {
-        case 'short': return '1년 미만의 단기 투자'
-        case 'medium': return '1-3년의 중기 투자'
-        case 'long': return '3-5년의 장기 투자'
-        case 'verylong': return '5년 이상의 초장기 투자'
-        default: return ''
-      }
-    }
-
-    const getGoalText = () => {
-      switch(investmentGoal) {
-        case 'retirement': return '은퇴 준비'
-        case 'wealth': return '자산 증식'
-        case 'income': return '부수입 창출'
-        case 'education': return '교육비 마련'
-        case 'house': return '주택 구입'
-        case 'emergency': return '비상금 마련'
-        case 'business': return '사업 자금'
-        default: return ''
-      }
-    }
-
-    const getLossAnalysis = () => {
-      switch(lossResponse) {
-        case 'panic-sell': return '손실 발생 시 즉시 매도하여 추가 손실을 막으려는 성향이 강합니다. 이는 원금 보존을 최우선으로 하는 보수적 투자 성향을 보여줍니다.'
-        case 'partial-sell': return '손실 발생 시 일부만 매도하는 신중한 성향을 보입니다. 리스크 관리와 기회 보존 사이의 균형을 추구하는 합리적 접근법입니다.'
-        case 'hold': return '손실 상황에서도 장기적 관점을 유지하는 인내심을 보입니다. 시장의 회복력을 믿는 중장기 투자 관점을 가지고 있습니다.'
-        case 'buy-more': return '손실 상황을 오히려 기회로 보는 적극적 투자 성향을 보입니다. 평단가 하향 조정을 통한 수익률 개선 전략을 선호합니다.'
-        default: return ''
-      }
-    }
-
-    const getProfitAnalysis = () => {
-      switch(profitResponse) {
-        case 'sell-all': return '수익 발생 시 확실한 이익 실현을 선호합니다. 안정적 수익 확보를 통한 리스크 회피 성향이 강합니다.'
-        case 'sell-half': return '수익의 일부를 실현하면서도 추가 상승 기회를 놓치지 않으려는 균형감각을 보입니다.'
-        case 'hold-all': return '수익 상황에서도 더 큰 수익을 기대하는 강한 상승 확신을 가지고 있습니다.'
-        case 'buy-more': return '수익 상황에서도 추가 매수하는 매우 적극적인 투자 성향을 보입니다. 강한 확신과 높은 위험 감수 능력을 가지고 있습니다.'
-        default: return ''
-      }
-    }
-
-    const getAILevelText = () => {
-      switch(aiInvolvementLevel) {
-        case 'reference': return 'AI의 분석과 추천을 참고하되 최종 결정은 본인이 내리고 싶어하는 주도적 투자자'
-        case 'collaboration': return 'AI와 협업하여 함께 투자 결정을 내리고 싶어하는 협력적 투자자'
-        case 'delegation': return 'AI에게 투자 실행을 위임하고 싶어하는 효율 추구형 투자자'
-        default: return ''
-      }
-    }
-
-    // 개인화된 분석 생성 - 투자 스타일, 장점, 단점, 개선방안
-    const getInvestmentStyleAnalysis = () => {
-      let investmentStyle = ''
-      let strengths = []
-      let weaknesses = []
-      let strengthMaximization = []
-      let weaknessImprovement = []
-
-      // 투자 스타일 정의
-      if (riskScore <= 6) {
-        investmentStyle = '**안전 우선형 투자자** - 원금 보존을 최우선으로 하며, 확실성을 추구하는 신중한 투자 스타일'
-        
-        strengths = [
-          '강한 리스크 관리 의식으로 큰 손실 방지',
-          '감정적 투자 결정을 피하는 냉정함',
-          '장기적 관점에서 꾸준한 자산 보존',
-          '시장 변동성에 흔들리지 않는 안정성'
-        ]
-        
-        weaknesses = [
-          '과도한 보수성으로 인한 기회비용 발생',
-          '인플레이션 대비 실질 수익률 부족',
-          '시장 상승기 수익 극대화 기회 상실',
-          '현금 비중 과다로 인한 자산 성장 제한'
-        ]
-        
-        strengthMaximization = [
-          '안정성을 유지하면서도 **고배당 우량주** 비중 확대',
-          '**달러비용평균법(DCA)**을 활용한 꾸준한 투자',
-          '**원금보장형 ELS** 등 안전한 구조화 상품 활용',
-          '**국채 및 회사채 래더링** 전략으로 안정 수익 확보'
-        ]
-        
-        weaknessImprovement = [
-          '전체 포트폴리오의 **20-30%는 성장주**에 배분하여 인플레이션 헤지',
-          '**REITs나 인프라 펀드** 등으로 대안투자 경험 축적',
-          '**월별 소액 투자**로 시장 변동성에 점진적 노출',
-          '**5년 이상 장기 목표** 설정으로 단기 변동성 극복'
-        ]
-      } else if (riskScore <= 10) {
-        investmentStyle = '**균형 추구형 투자자** - 리스크와 수익의 최적 균형을 찾으며, 상황에 따른 유연한 대응이 가능한 투자 스타일'
-        
-        strengths = [
-          '리스크와 수익의 균형감각 보유',
-          '시장 상황에 따른 유연한 대응력',
-          '감정적 판단보다는 합리적 의사결정',
-          '분산투자를 통한 효과적 리스크 관리'
-        ]
-        
-        weaknesses = [
-          '우유부단함으로 인한 결정적 기회 놓침',
-          '중간적 접근으로 인한 평범한 수익률',
-          '시장 극단 상황에서의 애매한 포지셔닝',
-          '과도한 신중함으로 인한 액션 지연'
-        ]
-        
-        strengthMaximization = [
-          '**코어-샐러타이트 전략**으로 안정성과 공격성 조화',
-          '**섹터 로테이션** 전략으로 시장 사이클 활용',
-          '**정기적 리밸런싱**으로 균형 포트폴리오 유지',
-          '**시장 지표 기반 비중 조절**로 타이밍 개선'
-        ]
-        
-        weaknessImprovement = [
-          '**명확한 매수/매도 기준** 수립으로 결정력 향상',
-          '포트폴리오의 **10-20%는 고성장주**에 배분하여 수익률 제고',
-          '**시장 극단 상황 시나리오** 미리 준비하여 대응력 강화',
-          '**분기별 포트폴리오 점검**으로 신속한 의사결정 체계 구축'
-        ]
+  const getInvestmentProfile = () => {
+    let score = 0
+    let profileName = ''
+    let description = ''
+    let riskColor = ''
+    let icon = ''
+    let mbtiType = ''
+    let strengths: string[] = []
+    let weaknesses: string[] = []
+    let strengthTips: string[] = []
+    let weaknessTips: string[] = []
+    
+    // 점수 계산 로직
+    Object.values(answers).forEach(answer => {
+      if (answer.includes('conservative') || answer === 'capital-preservation' || 
+          answer === 'short' || answer === 'tight' || answer === 'beginner' || 
+          answer === 'avoid' || answer === 'panic' || answer === 'diversified') {
+        score += 1
+      } else if (answer.includes('moderate') || answer === 'steady-income' || 
+                 answer === 'medium-short' || answer === 'stable-adequate' || 
+                 answer === 'intermediate' || answer === 'concerning' || 
+                 answer === 'anxious' || answer === 'balanced') {
+        score += 2
+      } else if (answer === 'balanced-growth' || answer === 'medium-long' || 
+                 answer === 'stable-surplus' || answer === 'advanced' || 
+                 answer === 'manageable' || answer === 'concerned' || answer === 'focused') {
+        score += 3
       } else {
-        investmentStyle = '**적극 공격형 투자자** - 높은 수익을 추구하며 변동성을 기회로 활용하는 역동적인 투자 스타일'
-        
-        strengths = [
-          '강한 확신과 빠른 의사결정력',
-          '시장 변동성을 수익 기회로 전환',
-          '높은 성장 잠재력을 가진 투자처 발굴',
-          '시장 트렌드에 민감한 대응력'
-        ]
-        
-        weaknesses = [
-          '과신으로 인한 과도한 리스크 노출',
-          '감정적 투자로 인한 큰 손실 위험',
-          '단기적 사고로 인한 장기 관점 부족',
-          '집중투자로 인한 포트폴리오 불균형'
-        ]
-        
-        strengthMaximization = [
-          '**성장주와 테마주** 집중 투자로 수익률 극대화',
-          '**옵션 전략** 활용으로 레버리지 효과 증대',
-          '**모멘텀 투자** 전략으로 상승 트렌드 극대화',
-          '**해외 고성장 시장** 진출로 기회 영역 확대'
-        ]
-        
-        weaknessImprovement = [
-          '**포지션 사이징 원칙** 수립으로 단일 종목 비중 제한',
-          '**손절 라인 설정**으로 감정적 판단 방지',
-          '전체 포트폴리오의 **30-40%는 안정 자산**으로 균형 확보',
-          '**백테스팅과 시뮬레이션**으로 전략 검증 후 실행'
-        ]
+        score += 4
       }
+    })
 
-      return {
-        investmentStyle,
-        strengths,
-        weaknesses,
-        strengthMaximization,
-        weaknessImprovement
-      }
-    }
-
-    const styleAnalysis = getInvestmentStyleAnalysis()
-    personalizedAnalysis = `**이 투자 스타일을 통해 시장에서 성공하기 위한 맞춤 가이드를 제시해드립니다.**`
-
-    // 추천 자산 배분
-    let assetAllocation = ''
-    let investmentStrategy = []
-
-    if (riskType === '안전추구형') {
-      assetAllocation = '주식 20-30%, 채권 50-60%, 현금성자산 20-30%'
-      investmentStrategy = [
-        '원금 보장형 상품 우선 고려',
-        '고배당 우량주 중심 투자',
-        '국채 및 회사채 비중 확대',
-        '정기적인 분할 투자(DCA) 권장'
-      ]
-    } else if (riskType === '균형투자형') {
-      assetAllocation = '주식 50-60%, 채권 30-40%, 현금성자산 10%'
-      investmentStrategy = [
-        '대형주와 배당주 중심 포트폴리오',
-        '섹터 분산을 통한 리스크 관리',
-        '정기적인 리밸런싱 필요',
-        '시장 상황에 따른 비중 조절'
-      ]
+    if (score <= 12) {
+      profileName = '안전 추구형'
+      description = '원금 보존을 최우선으로 하며, 안정적이고 예측 가능한 수익을 선호합니다.'
+      riskColor = 'from-green-600 to-green-800'
+      icon = '🛡️'
+      mbtiType = 'SAFE'
+      strengths = ['원금 손실 위험 최소화', '안정적인 수익 창출', '스트레스 없는 투자', '장기 자산 보존']
+      weaknesses = ['인플레이션 대응 부족', '성장 기회 놓칠 가능성', '낮은 수익률', '기회비용 발생']
+      strengthTips = ['안전 자산 비중을 70% 이상 유지하여 안정성 극대화', '정기예금과 국고채 등 확실한 수익원 확보', '분산투자로 리스크를 더욱 분산']
+      weaknessTips = ['일부 자금(10-20%)을 성장형 ETF에 투자하여 성장성 보완', '물가연동채권으로 인플레이션 헤지', '정기적인 포트폴리오 리뷰로 기회 포착']
+    } else if (score <= 18) {
+      profileName = '신중한 성장형'
+      description = '안정성을 기반으로 하되, 제한적인 위험을 통해 성장을 추구합니다.'
+      riskColor = 'from-blue-600 to-blue-800'
+      icon = '📊'
+      mbtiType = 'STEADY'
+      strengths = ['균형잡힌 리스크 관리', '꾸준한 성장 추구', '감정적 판단 절제', '체계적 투자 접근']
+      weaknesses = ['성장 기회 일부 제한', '시장 타이밍 놓칠 가능성', '과도한 신중함', '변화 적응 속도']
+      strengthTips = ['체계적인 자산배분 전략으로 안정성과 성장성 동시 추구', '정기적 리밸런싱으로 목표 비중 유지', '장기 투자 관점 유지']
+      weaknessTips = ['성장주 비중을 단계적으로 늘려 수익성 개선', '시장 변동성을 기회로 활용하는 마인드 전환', '전문가 의견 적극 수용']
+    } else if (score <= 24) {
+      profileName = '균형 추구형'
+      description = '적절한 위험을 감수하여 장기적인 자산 증식을 목표로 합니다.'
+      riskColor = 'from-purple-600 to-purple-800'
+      icon = '⚖️'
+      mbtiType = 'BALANCED'
+      strengths = ['리스크-수익 균형 감각', '적응력과 유연성', '다양한 투자 경험', '시장 변화 대응 능력']
+      weaknesses = ['일관성 부족 가능성', '우유부단한 결정', '중간적 성과', '명확한 방향성 부족']
+      strengthTips = ['다양한 자산군에 분산투자하여 균형감 활용', '시장 상황에 따른 유연한 포트폴리오 조정', '리밸런싱을 통한 수익 최적화']
+      weaknessTips = ['명확한 투자 원칙과 기준 수립', '감정적 판단보다 데이터 기반 의사결정', '장기 목표에 따른 일관된 전략 유지']
     } else {
-      assetAllocation = '주식 70-80%, 채권 15-20%, 대안투자 5-10%'
-      investmentStrategy = [
-        '성장주와 테마주 적극 편입',
-        '해외 주식 및 ETF 다양화',
-        '시장 타이밍 전략 활용',
-        '변동성을 활용한 수익 극대화'
-      ]
+      profileName = '적극 투자형'
+      description = '높은 수익을 위해 상당한 위험을 감수할 수 있는 공격적 투자자입니다.'
+      riskColor = 'from-red-600 to-red-800'
+      icon = '🚀'
+      mbtiType = 'AGGRESSIVE'
+      strengths = ['높은 수익 추구 의지', '시장 기회 포착 능력', '변동성 활용 가능', '적극적 투자 성향']
+      weaknesses = ['높은 손실 위험', '감정적 투자 결정', '과도한 집중 투자', '단기 변동성에 민감']
+      strengthTips = ['성장주와 혁신 기업에 집중 투자하여 고수익 추구', '시장 변동성을 매수 기회로 활용', '새로운 투자 기회 적극 발굴']
+      weaknessTips = ['포트폴리오 다양화로 집중 위험 분산', '손절매 원칙 설정으로 손실 제한', '감정적 판단 방지를 위한 자동화 시스템 구축']
     }
 
-    return {
-      riskType,
-      personalizedAnalysis,
-      styleAnalysis,
-      riskScore,
-      mbtiProfile: getInvestmentMBTI()
-    }
+    return { profileName, description, riskColor, icon, score, mbtiType, strengths, weaknesses, strengthTips, weaknessTips }
   }
 
-  const analysis = getPersonalizedAnalysis()
-
-  const handleNext = () => {
-    onNext({ 
-      investmentProfile: analysis,
-      riskTolerance: analysis.riskType === '안전추구형' ? 'conservative' : 
-                    analysis.riskType === '균형투자형' ? 'moderate' : 'aggressive'
+  const handleComplete = () => {
+    const profile = getInvestmentProfile()
+    onNext({
+      consultantData, // 알렉스로부터 받은 기본 정보도 함께 전달
+      investmentProfile: { ...answers, ...profile }
     })
   }
 
+  const currentQuestionData = questions[currentQuestion]
+
+  if (showResult) {
+    const profile = getInvestmentProfile()
+    
+    return (
+      <div className="pt-16 pb-6 px-4">
+        <div className="container mx-auto px-4 py-8">
+          <div className="max-w-4xl mx-auto space-y-6">
+            {/* Header */}
+            <div className="relative bg-gradient-to-r from-slate-800/90 to-purple-900/90 backdrop-blur-xl rounded-2xl p-8 border border-white/10 shadow-xl">
+              <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-purple-500/5 rounded-2xl"></div>
+              <div className="relative z-10 text-center">
+                <div className="text-6xl mb-4">🧠</div>
+                <h2 className="text-2xl font-bold text-white mb-2">투자성향분석가 아리아</h2>
+                <p className="text-blue-400 font-medium mb-2 italic">"당신의 마음을 읽는 투자 심리 전문가"</p>
+                <p className="text-purple-200">분석이 완료되었습니다. 당신의 투자 성향을 확인해보세요.</p>
+              </div>
+            </div>
+
+            {/* 분석 결과 */}
+            <div className="bg-gradient-to-r from-slate-800/90 to-slate-700/90 backdrop-blur-xl rounded-2xl p-8 border border-white/10">
+              <div className="text-center mb-8">
+                <div className="text-6xl mb-4">{profile.icon}</div>
+                <h3 className="text-3xl font-bold bg-gradient-to-r from-white to-purple-300 bg-clip-text text-transparent mb-4">
+                  {profile.profileName}
+                </h3>
+                
+                {/* MBTI 스타일 표시 */}
+                <div className="mb-6">
+                  <div className="text-sm text-purple-300 mb-2">투자성향 유형</div>
+                  <div className={`inline-block bg-gradient-to-r ${profile.riskColor} px-8 py-3 rounded-full text-white text-2xl font-bold tracking-widest shadow-lg`}>
+                    {profile.mbtiType}
+                  </div>
+                </div>
+                
+                <div className={`bg-gradient-to-r ${profile.riskColor} p-1 rounded-full mb-4`}>
+                  <div className="bg-slate-900 rounded-full px-6 py-2">
+                    <span className="text-white font-medium">위험 수용도 점수: {profile.score}/32</span>
+                  </div>
+                </div>
+                <p className="text-lg text-purple-200 leading-relaxed">{profile.description}</p>
+              </div>
+
+              {/* 강점과 단점 */}
+              <div className="grid md:grid-cols-2 gap-6 mb-8">
+                {/* 강점 */}
+                <div className="bg-emerald-900/30 rounded-xl p-6 border border-emerald-400/20">
+                  <h4 className="text-xl font-bold text-white mb-4 flex items-center">
+                    <span className="mr-2">💪</span> 강점
+                  </h4>
+                  <div className="space-y-2">
+                    {profile.strengths.map((strength, index) => (
+                      <div key={index} className="flex items-start">
+                        <span className="text-emerald-400 mr-2 mt-1">✓</span>
+                        <span className="text-emerald-100 text-sm">{strength}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 단점 */}
+                <div className="bg-red-900/30 rounded-xl p-6 border border-red-400/20">
+                  <h4 className="text-xl font-bold text-white mb-4 flex items-center">
+                    <span className="mr-2">⚠️</span> 주의사항
+                  </h4>
+                  <div className="space-y-2">
+                    {profile.weaknesses.map((weakness, index) => (
+                      <div key={index} className="flex items-start">
+                        <span className="text-red-400 mr-2 mt-1">!</span>
+                        <span className="text-red-100 text-sm">{weakness}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* 개선 방안 */}
+              <div className="grid md:grid-cols-2 gap-6 mb-8">
+                {/* 강점 극대화 */}
+                <div className="bg-blue-900/30 rounded-xl p-6 border border-blue-400/20">
+                  <h4 className="text-xl font-bold text-white mb-4 flex items-center">
+                    <span className="mr-2">🚀</span> 강점 극대화 방법
+                  </h4>
+                  <div className="space-y-3">
+                    {profile.strengthTips.map((tip, index) => (
+                      <div key={index} className="bg-blue-800/20 rounded-lg p-3">
+                        <span className="text-blue-200 text-sm">{tip}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 단점 보완 */}
+                <div className="bg-orange-900/30 rounded-xl p-6 border border-orange-400/20">
+                  <h4 className="text-xl font-bold text-white mb-4 flex items-center">
+                    <span className="mr-2">🔧</span> 단점 보완 방안
+                  </h4>
+                  <div className="space-y-3">
+                    {profile.weaknessTips.map((tip, index) => (
+                      <div key={index} className="bg-orange-800/20 rounded-lg p-3">
+                        <span className="text-orange-200 text-sm">{tip}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* 투자 요약 정보 */}
+              <div className="bg-slate-800/50 rounded-xl p-6 mb-8">
+                <h4 className="text-xl font-bold text-white mb-4 flex items-center">
+                  <span className="mr-2">�</span> 투자 프로필 요약
+                </h4>
+                <div className="grid md:grid-cols-3 gap-4 text-sm">
+                  <div className="text-center p-3 bg-slate-700/30 rounded-lg">
+                    <span className="text-purple-300 block mb-1">위험 선호도</span>
+                    <span className="text-white font-medium">{answers.riskTolerance.includes('aggressive') ? '높음' : 
+                      answers.riskTolerance.includes('moderate') ? '보통' : '낮음'}</span>
+                  </div>
+                  <div className="text-center p-3 bg-slate-700/30 rounded-lg">
+                    <span className="text-purple-300 block mb-1">투자 기간</span>
+                    <span className="text-white font-medium">{answers.timeHorizon === 'long' ? '장기' : 
+                      answers.timeHorizon.includes('medium') ? '중기' : '단기'}</span>
+                  </div>
+                  <div className="text-center p-3 bg-slate-700/30 rounded-lg">
+                    <span className="text-purple-300 block mb-1">투자 스타일</span>
+                    <span className="text-white font-medium">
+                      {profile.score <= 12 ? '보수적' :
+                       profile.score <= 18 ? '신중함' :
+                       profile.score <= 24 ? '균형적' : '적극적'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-4 justify-center">
+                <button
+                  onClick={() => setShowResult(false)}
+                  className="px-6 py-3 bg-slate-700 hover:bg-slate-600 rounded-xl text-white font-medium transition-colors"
+                >
+                  다시 분석하기
+                </button>
+                <button
+                  onClick={handleComplete}
+                  className="px-8 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 rounded-xl text-white font-bold transition-all transform hover:scale-105"
+                >
+                  다음 단계로
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="space-y-4">
-      {/* AI 전문가 소개 카드 */}
-      <div className="bg-white rounded-2xl shadow-xl p-5 text-center border border-gray-100">
-        <div className="relative mb-4 p-4 bg-gradient-to-br from-purple-600 to-purple-700 rounded-xl text-white">
-          <div className="text-3xl mb-2">🤖</div>
-          <h2 className="text-lg font-bold mb-1">AI 성향분석 아리아</h2>
-          <p className="text-xs text-purple-100 italic mb-2">"정확하고 객관적인 데이터 분석가"</p>
-        </div>
-        <p className="text-sm text-gray-600 leading-relaxed">
-          안녕하세요! 저는 아리아예요. 첨단 AI 기술로<br/>
-          알렉스가 수집한 데이터를 분석해서 당신만의 투자 성향을 명확하게 파악해드릴게요.
-        </p>
-      </div>
-
-      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 mb-6">
-        <div className="text-center mb-6">
-          <div className="bg-white rounded-lg p-4 mb-4">
-            <h3 className="text-xl font-bold text-blue-900 mb-2">
-              💡 당신의 투자 성향이 나왔어요
-            </h3>
-            <div className="text-lg font-semibold text-blue-800 mb-2">
-              {analysis.mbtiProfile.type}
-            </div>
-            <div className="text-blue-700 text-sm">
-              {analysis.mbtiProfile.desc}
-            </div>
-          </div>
-          
-          <div className="bg-white rounded-lg p-4 mb-4">
-            <h3 className="text-xl font-bold text-green-900 mb-2">
-              🎯 투자 행동 패턴
-            </h3>
-            <div className="text-lg font-semibold text-green-800 mb-2">
-              {analysis.riskType}
-            </div>
-            <div className="text-green-700 text-sm">
-              {analysis.styleAnalysis.investmentStyle}
+    <div className="pt-16 pb-6 px-4">
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto space-y-6">
+          {/* Header */}
+          <div className="relative bg-gradient-to-r from-slate-800/90 to-purple-900/90 backdrop-blur-xl rounded-2xl p-8 border border-white/10 shadow-xl">
+            <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-purple-500/5 rounded-2xl"></div>
+            <div className="relative z-10 text-center">
+              <div className="text-6xl mb-4">🧠</div>
+              <h2 className="text-2xl font-bold text-white mb-2">투자성향분석가 아리아</h2>
+              <p className="text-blue-400 font-medium mb-2 italic">"당신의 마음을 읽는 투자 심리 전문가"</p>
+              <p className="text-purple-200">알렉스 매니저가 수집한 정보를 바탕으로 심층 투자성향 분석을 진행하겠습니다.</p>
             </div>
           </div>
 
-          <div className="bg-gradient-to-r from-purple-100 to-blue-100 rounded-lg p-4">
-            <h4 className="font-bold text-purple-900 mb-3">📊 데이터 분석 요약</h4>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div className="text-center">
-                <div className="font-semibold text-purple-800">리스크 허용도</div>
-                <div className="text-purple-700">{analysis.riskScore >= 12 ? '상위 10%' : analysis.riskScore >= 9 ? '상위 25%' : analysis.riskScore >= 6 ? '중간' : '하위 25%'}</div>
-              </div>
-              <div className="text-center">
-                <div className="font-semibold text-purple-800">의사결정 성향</div>
-                <div className="text-purple-700">{consultantData.decisionResponse === 'data-analysis' ? '분석형' : consultantData.decisionResponse === 'emotional' ? '감정형' : '균형형'}</div>
-              </div>
-              <div className="text-center">
-                <div className="font-semibold text-purple-800">위험도 점수</div>
-                <div className="text-purple-700">{analysis.riskScore}/15</div>
-              </div>
-              <div className="text-center">
-                <div className="font-semibold text-purple-800">성장 성향</div>
-                <div className="text-purple-700">{consultantData.importantFactor === 'growth' || consultantData.importantFactor === 'aggressive' ? '높음' : consultantData.importantFactor === 'balance' ? '중간' : '낮음'}</div>
+          {/* 알렉스로부터 받은 기본 정보 */}
+          {consultantData.investmentAmount && (
+            <div className="bg-gradient-to-r from-slate-800/90 to-indigo-900/90 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
+              <h3 className="text-lg font-bold text-white mb-4 flex items-center">
+                <span className="mr-2">📋</span> 알렉스 매니저 상담 요약
+              </h3>
+              <div className="grid md:grid-cols-2 gap-4 text-sm">
+                <div className="flex justify-between p-3 bg-slate-700/30 rounded-lg">
+                  <span className="text-indigo-300">투자 가능 금액:</span>
+                  <span className="text-white font-medium">{getAmountText(consultantData.investmentAmount)}</span>
+                </div>
+                <div className="flex justify-between p-3 bg-slate-700/30 rounded-lg">
+                  <span className="text-indigo-300">투자 경험:</span>
+                  <span className="text-white font-medium">{getExperienceText(consultantData.investmentExperience)}</span>
+                </div>
+                <div className="flex justify-between p-3 bg-slate-700/30 rounded-lg">
+                  <span className="text-indigo-300">투자 기간:</span>
+                  <span className="text-white font-medium">
+                    {consultantData.investmentPeriod === 'short' ? '단기 (1년 미만)' :
+                     consultantData.investmentPeriod === 'medium' ? '중기 (1-3년)' :
+                     consultantData.investmentPeriod === 'long' ? '장기 (3-5년)' :
+                     consultantData.investmentPeriod === 'verylong' ? '초장기 (5년 이상)' : '미설정'}
+                  </span>
+                </div>
+                <div className="flex justify-between p-3 bg-slate-700/30 rounded-lg">
+                  <span className="text-indigo-300">AI 개입 수준:</span>
+                  <span className="text-white font-medium">
+                    {consultantData.aiInvolvementLevel === 'reference' ? '참고형' :
+                     consultantData.aiInvolvementLevel === 'collaboration' ? '협업형' :
+                     consultantData.aiInvolvementLevel === 'guide' ? '가이드형' : '미설정'}
+                  </span>
+                </div>
               </div>
             </div>
-            <div className="text-xs text-purple-600 mt-2 italic">
-              ({analysis.riskScore >= 9 ? '수익 기회에 적극적인 성향이 나타나고 있어요' : analysis.riskScore >= 6 ? '안정성과 수익성의 균형을 추구하시는 편이에요' : '안전한 투자를 우선시하는 신중한 성향이에요'})
-            </div>
-          </div>
-        </div>
+          )}
 
-        <div className="space-y-4">
-          {/* 기본 투자 정보 카드 */}
-          <div className="bg-white rounded-2xl shadow-xl p-5 border border-gray-100">
-            <h4 className="text-base font-bold text-gray-800 mb-4 flex items-center">
-              📋 기본 투자 정보
-            </h4>
-            <div className="space-y-3">
-              <div className="grid grid-cols-1 gap-3 text-sm">
-                <div className="bg-gray-50 rounded-lg p-3">
-                  <span className="font-medium text-gray-700">투자 가용 금액:</span>
-                  <span className="ml-2 text-gray-900">{getInvestmentAmountText(consultantData.investmentAmount)}</span>
-                </div>
-                <div className="bg-gray-50 rounded-lg p-3">
-                  <span className="font-medium text-gray-700">투자 경험:</span>
-                  <span className="ml-2 text-gray-900">{getInvestmentExperienceText(consultantData.investmentExperience)}</span>
-                </div>
-                <div className="bg-gray-50 rounded-lg p-3">
-                  <span className="font-medium text-gray-700">투자 기간:</span>
-                  <span className="ml-2 text-gray-900">{getInvestmentPeriodText(consultantData.investmentPeriod)}</span>
-                </div>
-                <div className="bg-gray-50 rounded-lg p-3">
-                  <span className="font-medium text-gray-700">투자 목표:</span>
-                  <span className="ml-2 text-gray-900">{getInvestmentGoalText(consultantData.investmentGoal)}</span>
-                </div>
-                <div className="bg-gray-50 rounded-lg p-3">
-                  <span className="font-medium text-gray-700">AI 개입 수준:</span>
-                  <span className="ml-2 text-gray-900">{getAILevelText(consultantData.aiInvolvementLevel)}</span>
-                </div>
-                <div className="bg-blue-50 rounded-lg p-3">
-                  <span className="font-medium text-blue-700">위험도 점수:</span>
-                  <span className="ml-2 text-blue-900 font-bold">{analysis.riskScore}/15</span>
-                </div>
-              </div>
+          {/* Progress */}
+          <div className="bg-slate-800/50 rounded-xl p-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-purple-300 font-medium">진행률</span>
+              <span className="text-white font-bold">{currentQuestion + 1} / {questions.length}</span>
+            </div>
+            <div className="w-full bg-slate-700 rounded-full h-2">
+              <div 
+                className="bg-gradient-to-r from-purple-500 to-blue-500 h-2 rounded-full transition-all duration-300"
+                style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
+              ></div>
             </div>
           </div>
 
-          {/* 투자 강점과 약점 카드 */}
-          <div className="bg-white rounded-2xl shadow-xl p-5 border border-gray-100">
-            <div className="space-y-4">
-              <div className="bg-green-50 rounded-xl p-4">
-                <h4 className="font-bold text-green-800 mb-3 flex items-center text-sm">
-                  💪 당신의 투자 강점
-                </h4>
-                <ul className="space-y-2">
-                  {analysis.styleAnalysis.strengths.map((strength: string, index: number) => (
-                    <li key={index} className="flex items-start">
-                      <span className="text-green-500 mr-2 mt-1 text-xs">✓</span>
-                      <span className="text-green-700 text-xs leading-relaxed">{strength}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+          {/* Question */}
+          <div className="bg-gradient-to-r from-slate-800/90 to-slate-700/90 backdrop-blur-xl rounded-2xl p-8 border border-white/10">
+            <div className="mb-8">
+              <h3 className="text-2xl font-bold text-white mb-4 leading-relaxed">
+                {currentQuestionData.question}
+              </h3>
+              <p className="text-purple-300 text-lg">{currentQuestionData.description}</p>
+            </div>
 
-              <div className="bg-orange-50 rounded-xl p-4">
-                <h4 className="font-bold text-orange-800 mb-3 flex items-center text-sm">
-                  ⚠️ 주의해야 할 약점
-                </h4>
-                <ul className="space-y-2">
-                  {analysis.styleAnalysis.weaknesses.map((weakness: string, index: number) => (
-                    <li key={index} className="flex items-start">
-                      <span className="text-orange-500 mr-2 mt-1 text-xs">!</span>
-                      <span className="text-orange-700 text-xs leading-relaxed">{weakness}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            <div className="grid gap-4">
+              {currentQuestionData.options.map((option, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleAnswer(option.value)}
+                  className="group p-6 bg-slate-800/50 hover:bg-slate-700/70 rounded-xl border border-slate-600 hover:border-purple-500 transition-all duration-300 text-left transform hover:scale-[1.02]"
+                >
+                  <div className="flex items-center">
+                    <span className="text-2xl mr-4">{option.emoji}</span>
+                    <span className="text-white text-lg font-medium group-hover:text-purple-300 transition-colors">
+                      {option.label}
+                    </span>
+                  </div>
+                </button>
+              ))}
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="bg-blue-50 rounded-lg p-4">
-              <h4 className="font-semibold text-blue-800 mb-3">🚀 강점 극대화 방안</h4>
-              <ul className="space-y-2">
-                {analysis.styleAnalysis.strengthMaximization.map((method: string, index: number) => (
-                  <li key={index} className="flex items-start">
-                    <span className="text-blue-500 mr-2 mt-1">↗</span>
-                    <span className="text-blue-700 text-sm">{method}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="bg-orange-50 rounded-lg p-4">
-              <h4 className="font-semibold text-orange-800 mb-3">🔧 약점 보완 방법</h4>
-              <ul className="space-y-2">
-                {analysis.styleAnalysis.weaknessImprovement.map((improvement: string, index: number) => (
-                  <li key={index} className="flex items-start">
-                    <span className="text-orange-500 mr-2 mt-1">→</span>
-                    <span className="text-orange-700 text-sm">{improvement}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          {/* Navigation */}
+          <div className="flex justify-between">
+            <button
+              onClick={onPrevious}
+              className="px-6 py-3 bg-slate-700 hover:bg-slate-600 rounded-xl text-white font-medium transition-colors"
+            >
+              이전 단계
+            </button>
+            {currentQuestion > 0 && (
+              <button
+                onClick={() => setCurrentQuestion(prev => prev - 1)}
+                className="px-6 py-3 bg-purple-600 hover:bg-purple-700 rounded-xl text-white font-medium transition-colors"
+              >
+                이전 질문
+              </button>
+            )}
           </div>
-        </div>
-      </div>
-
-      <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl p-6 text-white text-center mb-6">
-        <div className="text-2xl mb-3">✅</div>
-        <h3 className="text-xl font-bold mb-2">성향 분석이 완료됐어요</h3>
-        <p className="text-blue-100 mb-4">
-          이제 '시장전략가 소피아'가 등장해서<br />
-          당신의 투자 성향에 딱 맞는 시장 분석을 해드릴게요.
-        </p>
-        <div className="text-sm text-blue-200 italic">
-          "당신만의 시장 포지션, 함께 찾아볼까요?"
-        </div>
-      </div>
-
-      {/* 네비게이션 버튼 */}
-      <div className="bg-white rounded-2xl shadow-xl p-4 border border-gray-100">
-        <div className="flex gap-3">
-          <button
-            onClick={onPrevious}
-            className="flex-1 bg-gray-500 text-white py-3 px-4 rounded-xl hover:bg-gray-600 transition-all duration-200 font-medium text-sm"
-          >
-            ← 이전
-          </button>
-          <button
-            onClick={handleNext}
-            className="flex-[2] bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-medium text-sm transform hover:scale-105 active:scale-95"
-          >
-            시장 분석 받기 →
-          </button>
         </div>
       </div>
     </div>
