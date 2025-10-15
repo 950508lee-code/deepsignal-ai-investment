@@ -62,6 +62,75 @@ export default function InvestmentAnalysisStep({ onNext, onPrevious, userData }:
     }
   }
   
+  // 투자 MBTI 프로파일 생성
+  const getInvestmentMBTI = () => {
+    const {
+      informationSource,
+      decisionResponse,
+      externalVariableResponse,
+      lossResponse,
+      profitResponse,
+      importantFactor,
+      aiInvolvementLevel
+    } = consultantData
+
+    // 정보 처리 방식 (I: 내향적 vs E: 외향적)
+    let infoType = 'I' // 기본값
+    if (informationSource === 'community' || informationSource === 'expert-advice' || informationSource === 'multiple-sources') {
+      infoType = 'E' // 외부 정보 적극 활용
+    } else if (informationSource === 'self-analysis') {
+      infoType = 'I' // 내적 분석 선호
+    }
+
+    // 의사결정 방식 (S: 감각형 vs N: 직관형)
+    let decisionType = 'S' // 기본값
+    if (decisionResponse === 'data-analysis') {
+      decisionType = 'S' // 구체적 데이터 기반
+    } else if (decisionResponse === 'wait-observe' || externalVariableResponse === 'long-term-view') {
+      decisionType = 'N' // 직관적 장기 관점
+    }
+
+    // 감정 vs 논리 (T: 사고형 vs F: 감정형)
+    let emotionType = 'T' // 기본값
+    if (decisionResponse === 'emotional') {
+      emotionType = 'F' // 감정적 대응
+    } else if (decisionResponse === 'data-analysis') {
+      emotionType = 'T' // 논리적 분석
+    }
+
+    // 계획성 (J: 판단형 vs P: 인식형)
+    let planType = 'J' // 기본값
+    if (aiInvolvementLevel === 'guide' || externalVariableResponse === 'long-term-view') {
+      planType = 'J' // 체계적 접근
+    } else if (externalVariableResponse === 'opportunity-seek') {
+      planType = 'P' // 유연한 접근
+    }
+
+    const mbtiCode = infoType + decisionType + emotionType + planType
+
+    // MBTI별 투자 성향 매핑
+    const mbtiProfiles: { [key: string]: { type: string; desc: string } } = {
+      'ISTJ': { type: '신중형 안정추구자', desc: '체계적이고 신중한 장기 투자를 선호하며, 검증된 투자처에 집중' },
+      'ISFJ': { type: '보수형 수익추구자', desc: '안정성을 최우선으로 하되, 꾸준한 수익 창출을 목표로 하는 신중한 투자자' },
+      'INFJ': { type: '직관형 가치투자자', desc: '장기적 관점에서 가치 있는 투자처를 발굴하는 통찰력 있는 투자자' },
+      'INTJ': { type: '전략형 성장투자자', desc: '체계적인 분석을 바탕으로 장기 성장 가능성이 높은 투자처를 선택' },
+      'ISTP': { type: '실용형 기회포착자', desc: '데이터를 바탕으로 실용적 판단을 내리며, 기회가 오면 과감히 투자' },
+      'ISFP': { type: '감성형 균형투자자', desc: '개인적 가치와 감정을 고려하여 균형 잡힌 포트폴리오를 구성' },
+      'INFP': { type: '이상형 장기투자자', desc: '본인의 가치관에 맞는 투자처를 찾아 장기적으로 투자하는 성향' },
+      'INTP': { type: '분석형 탐구투자자', desc: '깊이 있는 분석을 통해 새로운 투자 기회를 발굴하는 것을 선호' },
+      'ESTP': { type: '적극형 단기투자자', desc: '시장 흐름을 빠르게 파악하여 단기 수익 기회를 적극적으로 포착' },
+      'ESFP': { type: '활동형 트렌드추종자', desc: '시장 트렌드와 대중의 관심사를 반영한 투자를 선호' },
+      'ENFP': { type: '열정형 성장추구자', desc: '새로운 성장 동력과 혁신적인 투자처에 대한 열정적 투자' },
+      'ENTP': { type: '혁신형 기회창조자', desc: '창의적이고 혁신적인 투자 아이디어를 통해 새로운 기회를 창출' },
+      'ESTJ': { type: '리더형 체계투자자', desc: '체계적인 포트폴리오 관리를 통해 안정적이면서도 성장성 있는 투자 추구' },
+      'ESFJ': { type: '협력형 안정투자자', desc: '전문가 조언을 적극 활용하여 안정적이고 지속가능한 투자 전략 수립' },
+      'ENFJ': { type: '비전형 가치창조자', desc: '사회적 가치와 장기적 비전을 고려한 책임감 있는 투자를 선호' },
+      'ENTJ': { type: '전략형 수익극대화자', desc: '명확한 목표 설정과 전략적 접근을 통해 수익 극대화를 추구하는 리더형 투자자' }
+    }
+
+    return mbtiProfiles[mbtiCode] || { type: '균형형 투자자', desc: '다양한 투자 성향을 균형있게 보유한 투자자' }
+  }
+
   // 실제 상담 데이터를 기반으로 한 개인화된 AI 분석
   const getPersonalizedAnalysis = () => {
     const {
@@ -331,7 +400,8 @@ export default function InvestmentAnalysisStep({ onNext, onPrevious, userData }:
       riskType,
       personalizedAnalysis,
       styleAnalysis,
-      riskScore
+      riskScore,
+      mbtiProfile: getInvestmentMBTI()
     }
   }
 
@@ -349,17 +419,60 @@ export default function InvestmentAnalysisStep({ onNext, onPrevious, userData }:
     <div className="bg-white rounded-xl shadow-lg p-8">
       <div className="text-center mb-8">
         <div className="text-4xl mb-4">🤖</div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">AI 투자 성향 분석 결과</h2>
-        <p className="text-gray-600">당신의 상담 내용을 바탕으로 개인화된 투자 성향을 분석했습니다</p>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">AI 성향분석 아리아</h2>
+        <p className="text-purple-600 font-medium mb-2 italic">"정확하고 객관적인 데이터 분석가"</p>
+        <p className="text-gray-600">안녕하세요! 저는 아리아입니다. 첨단 AI 기술을 활용하여 알렉스가 수집한 정보를 바탕으로 당신의 투자 성향을 과학적이고 객관적으로 분석해드리겠습니다.</p>
       </div>
 
       <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 mb-6">
         <div className="text-center mb-6">
-          <h3 className="text-2xl font-bold text-blue-900 mb-4">
-            💡 {analysis.riskType}
-          </h3>
-          <div className="text-blue-700 text-sm mb-4">
-            {analysis.styleAnalysis.investmentStyle}
+          <div className="bg-white rounded-lg p-4 mb-4">
+            <h3 className="text-xl font-bold text-blue-900 mb-2">
+              💡 성향 요약
+            </h3>
+            <div className="text-lg font-semibold text-blue-800 mb-2">
+              {analysis.mbtiProfile.type}
+            </div>
+            <div className="text-blue-700 text-sm">
+              {analysis.mbtiProfile.desc}
+            </div>
+          </div>
+          
+          <div className="bg-white rounded-lg p-4 mb-4">
+            <h3 className="text-xl font-bold text-green-900 mb-2">
+              🎯 투자 행동 패턴
+            </h3>
+            <div className="text-lg font-semibold text-green-800 mb-2">
+              {analysis.riskType}
+            </div>
+            <div className="text-green-700 text-sm">
+              {analysis.styleAnalysis.investmentStyle}
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-r from-purple-100 to-blue-100 rounded-lg p-4">
+            <h4 className="font-bold text-purple-900 mb-3">📊 데이터 분석 요약</h4>
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div className="text-center">
+                <div className="font-semibold text-purple-800">리스크 허용도</div>
+                <div className="text-purple-700">{analysis.riskScore >= 12 ? '상위 10%' : analysis.riskScore >= 9 ? '상위 25%' : analysis.riskScore >= 6 ? '중간' : '하위 25%'}</div>
+              </div>
+              <div className="text-center">
+                <div className="font-semibold text-purple-800">의사결정 성향</div>
+                <div className="text-purple-700">{consultantData.decisionResponse === 'data-analysis' ? '분석형' : consultantData.decisionResponse === 'emotional' ? '감정형' : '균형형'}</div>
+              </div>
+              <div className="text-center">
+                <div className="font-semibold text-purple-800">위험도 점수</div>
+                <div className="text-purple-700">{analysis.riskScore}/15</div>
+              </div>
+              <div className="text-center">
+                <div className="font-semibold text-purple-800">성장 성향</div>
+                <div className="text-purple-700">{consultantData.importantFactor === 'growth' || consultantData.importantFactor === 'aggressive' ? '높음' : consultantData.importantFactor === 'balance' ? '중간' : '낮음'}</div>
+              </div>
+            </div>
+            <div className="text-xs text-purple-600 mt-2 italic">
+              ({analysis.riskScore >= 9 ? '수익 기회에 더 민감한 응답 패턴' : analysis.riskScore >= 6 ? '리스크와 수익의 균형을 추구하는 패턴' : '손실 회피를 우선시하는 안정형 패턴'})
+            </div>
           </div>
         </div>
 
@@ -382,7 +495,9 @@ export default function InvestmentAnalysisStep({ onNext, onPrevious, userData }:
 
           <div className="grid md:grid-cols-2 gap-4">
             <div className="bg-green-50 rounded-lg p-4">
-              <h4 className="font-semibold text-green-800 mb-3">💪 당신의 투자 강점</h4>
+              <h4 className="font-bold text-green-800 mb-3 flex items-center">
+                💪 당신의 투자 강점
+              </h4>
               <ul className="space-y-2">
                 {analysis.styleAnalysis.strengths.map((strength: string, index: number) => (
                   <li key={index} className="flex items-start">
@@ -393,13 +508,15 @@ export default function InvestmentAnalysisStep({ onNext, onPrevious, userData }:
               </ul>
             </div>
 
-            <div className="bg-red-50 rounded-lg p-4">
-              <h4 className="font-semibold text-red-800 mb-3">⚠️ 주의해야 할 약점</h4>
+            <div className="bg-orange-50 rounded-lg p-4">
+              <h4 className="font-bold text-orange-800 mb-3 flex items-center">
+                ⚠️ 주의해야 할 약점
+              </h4>
               <ul className="space-y-2">
                 {analysis.styleAnalysis.weaknesses.map((weakness: string, index: number) => (
                   <li key={index} className="flex items-start">
-                    <span className="text-red-500 mr-2 mt-1">!</span>
-                    <span className="text-red-700 text-sm">{weakness}</span>
+                    <span className="text-orange-500 mr-2 mt-1">!</span>
+                    <span className="text-orange-700 text-sm">{weakness}</span>
                   </li>
                 ))}
               </ul>
@@ -434,16 +551,15 @@ export default function InvestmentAnalysisStep({ onNext, onPrevious, userData }:
         </div>
       </div>
 
-      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-        <div className="flex items-start">
-          <div className="text-yellow-600 mr-3">�</div>
-          <div>
-            <h4 className="font-medium text-yellow-800 mb-1">성향 분석 완료</h4>
-            <p className="text-sm text-yellow-700">
-              투자 성향 분석이 완료되었습니다. 다음 단계에서는 시장전략가가 현재 시장 상황과 
-              당신의 성향을 고려한 구체적인 투자 방향을 제시해드립니다.
-            </p>
-          </div>
+      <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl p-6 text-white text-center mb-6">
+        <div className="text-2xl mb-3">✅</div>
+        <h3 className="text-xl font-bold mb-2">성향 분석 완료</h3>
+        <p className="text-blue-100 mb-4">
+          이제 '시장전략가 소피아'가 등장해, 당신의 투자 성향에 맞는<br />
+          거시전략과 시장 시나리오를 제시합니다.
+        </p>
+        <div className="text-sm text-blue-200 italic">
+          “당신의 성향에 맞는 시장 포지션, 지금부터 함께 살펴보시죠.”
         </div>
       </div>
 

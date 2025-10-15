@@ -79,9 +79,10 @@ export default function PortfolioManagerStep({ onNext, onPrevious, userData }: P
   return (
     <div className="bg-white rounded-xl shadow-lg p-8">
       <div className="text-center mb-8">
-        <div className="text-4xl mb-4">📁</div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">포트폴리오매니저</h2>
-        <p className="text-gray-600 mb-4">최종 포트폴리오 구성 및 리스크 분석</p>
+        <div className="text-4xl mb-4">�</div>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">포트폴리오매니저 엠마</h2>
+        <p className="text-teal-600 font-medium mb-2 italic">"완벽한 조화의 설계자"</p>
+        <p className="text-gray-600 mb-4">안녕하세요! 저는 엠마입니다. 모든 투자 요소를 완벽하게 조합하는 포트폴리오 설계의 마에스트로서, 지금까지의 모든 분석을 종합하여 당신만의 최종 포트폴리오를 구성해드리겠습니다.</p>
         <div className="bg-indigo-50 rounded-lg p-4 text-sm text-indigo-800">
           <div className="font-medium mb-2">🛡️ 위험관리 전략:</div>
           <div className="text-xs space-y-1">

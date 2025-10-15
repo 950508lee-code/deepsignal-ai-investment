@@ -64,9 +64,10 @@ export default function TradingStrategistStep({ onPrevious, userData }: TradingS
   return (
     <div className="bg-white rounded-xl shadow-lg p-8">
       <div className="text-center mb-8">
-        <div className="text-4xl mb-4">📅</div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">매매전략가</h2>
-        <p className="text-gray-600 mb-4">최적 매수 타이밍과 매매 전략 제시</p>
+        <div className="text-4xl mb-4">⚡</div>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">매매전략가 라이언</h2>
+        <p className="text-violet-600 font-medium mb-2 italic">"타이밍의 마스터"</p>
+        <p className="text-gray-600 mb-4">안녕하세요! 저는 라이언입니다. 완벽한 타이밍을 포착하는 매매의 달인으로서, 엠마가 구성한 포트폴리오를 실제 투자로 실행하기 위한 구체적인 매매 전략을 제공해드리겠습니다.</p>
         <div className="bg-emerald-50 rounded-lg p-4 text-sm text-emerald-800">
           <div className="font-medium mb-2">🤖 알고리즘 트레이딩 전략:</div>
           <div className="text-xs space-y-1">

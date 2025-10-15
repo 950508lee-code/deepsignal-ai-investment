@@ -67,9 +67,10 @@ export default function StockAnalystStep({ onNext, onPrevious, userData }: Stock
   return (
     <div className="bg-white rounded-xl shadow-lg p-8">
       <div className="text-center mb-8">
-        <div className="text-4xl mb-4">📉</div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">종목분석가</h2>
-        <p className="text-gray-600 mb-4">기본·기술적 분석을 통한 종목 선정</p>
+        <div className="text-4xl mb-4">�</div>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">종목분석가 루나</h2>
+        <p className="text-red-600 font-medium mb-2 italic">"정밀한 가치 발굴 전문가"</p>
+        <p className="text-gray-600 mb-4">안녕하세요! 저는 루나입니다. 숨겨진 가치를 발굴하는 뛰어난 종목 분석 능력을 바탕으로, 마쿠스가 선정한 섹터 내에서 투자 가치가 높은 개별 종목을 선정해드리겠습니다.</p>
         <div className="bg-teal-50 rounded-lg p-4 text-sm text-teal-800">
           <div className="font-medium mb-2">📊 종목 선정 기준:</div>
           <div className="grid md:grid-cols-2 gap-2 text-xs">

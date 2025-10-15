@@ -70,9 +70,10 @@ export default function IndustryResearcherStep({ onNext, onPrevious, userData }:
   return (
     <div className="bg-white rounded-xl shadow-lg p-8">
       <div className="text-center mb-8">
-        <div className="text-4xl mb-4">🔍</div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">산업리서처</h2>
-        <p className="text-gray-600 mb-4">산업 트렌드 분석과 유망 섹터 발굴</p>
+        <div className="text-4xl mb-4">�</div>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">산업리서처 마쿠스</h2>
+        <p className="text-yellow-600 font-medium mb-2 italic">"미래를 예측하는 산업 전문가"</p>
+        <p className="text-gray-600 mb-4">안녕하세요! 저는 마쿠스입니다. 미래 산업을 내다보는 혜안을 가진 연구 전문가로서, 소피아의 시장 분석을 바탕으로 유망한 산업과 섹터를 발굴하고 투자 기회를 분석해드리겠습니다.</p>
         <div className="bg-orange-50 rounded-lg p-4 text-sm text-orange-800">
           <div className="font-medium mb-2">🏭 산업 분석 프로세스:</div>
           <div className="text-xs space-y-1">

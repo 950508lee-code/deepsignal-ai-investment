@@ -8,28 +8,31 @@ interface InvestmentConsultantStepProps {
   userData: any
 }
 
-export default function InvestmentConsultantStep({ onNext, onPrevious }: InvestmentConsultantStepProps) {
+export default function InvestmentConsultantStep({ onNext, onPrevious, userData }: InvestmentConsultantStepProps) {
   const [formData, setFormData] = useState({
     // 기본 투자 정보
-    investmentAmount: '',
-    investmentExperience: '',
-    investmentPeriod: '',
-    investmentGoal: '',
+    investmentAmount: userData.investmentAmount || '',
+    investmentExperience: userData.investmentExperience || '',
+    investmentPeriod: userData.investmentPeriod || '',
+    investmentGoal: userData.investmentGoal || '',
+    informationSource: userData.informationSource || '',
     
     // 위험 감내 성향
-    lossResponse: '',
-    profitResponse: '',
-    importantFactor: '',
-    newsFrequency: '',
+    lossResponse: userData.lossResponse || '',
+    profitResponse: userData.profitResponse || '',
+    importantFactor: userData.importantFactor || '',
+    newsFrequency: userData.newsFrequency || '',
+    decisionResponse: userData.decisionResponse || '',
+    externalVariableResponse: userData.externalVariableResponse || '',
     
     // AI 개입 수준
-    aiInvolvementLevel: '',
+    aiInvolvementLevel: userData.aiInvolvementLevel || '',
     
     // 기존 필드들 (호환성 유지)
-    age: '',
-    income: '',
-    riskTolerance: '',
-    preferredSectors: [] as string[]
+    age: userData.age || '',
+    income: userData.income || '',
+    riskTolerance: userData.riskTolerance || '',
+    preferredSectors: userData.preferredSectors || [] as string[]
   })
 
   const handleSubmit = () => {
@@ -54,7 +57,7 @@ export default function InvestmentConsultantStep({ onNext, onPrevious }: Investm
     setFormData(prev => ({
       ...prev,
       preferredSectors: prev.preferredSectors.includes(sector)
-        ? prev.preferredSectors.filter(s => s !== sector)
+        ? prev.preferredSectors.filter((s: string) => s !== sector)
         : [...prev.preferredSectors, sector]
     }))
   }
@@ -65,8 +68,9 @@ export default function InvestmentConsultantStep({ onNext, onPrevious }: Investm
     <div className="bg-white rounded-xl shadow-lg p-8">
       <div className="text-center mb-8">
         <div className="text-4xl mb-4">👨‍💼</div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">투자상담매니저</h2>
-        <p className="text-gray-600">투자 성향 분석과 맞춤형 전략 설계를 위한 정보를 수집합니다</p>
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">투자상담매니저 알렉스</h2>
+        <p className="text-blue-600 font-medium mb-2 italic">"신중하고 체계적인 분석 전문가"</p>
+        <p className="text-gray-600">안녕하세요! 저는 알렉스입니다. 친근하고 신뢰할 수 있는 투자 전문가로서, 당신의 투자 성향과 목표를 꼼꼼히 파악하고 기본 정보를 수집하겠습니다.</p>
       </div>
 
       <div className="space-y-8">
@@ -75,16 +79,17 @@ export default function InvestmentConsultantStep({ onNext, onPrevious }: Investm
           <h3 className="text-lg font-semibold text-blue-900 mb-4">1️⃣ 기본 투자 정보</h3>
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">투자 가용 금액</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">현재 투자 가능한 최대 금액 (비상금 제외)</label>
               <select 
                 value={formData.investmentAmount} 
                 onChange={(e) => setFormData(prev => ({ ...prev, investmentAmount: e.target.value }))}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
               >
                 <option value="">선택해주세요</option>
-                <option value="under1000">1천만원 미만</option>
-                <option value="1000-3000">1천-3천만원</option>
-                <option value="3000-5000">3천-5천만원</option>
+                <option value="under500">500만원 미만</option>
+                <option value="500-1000">500만원-1천만원</option>
+                <option value="1000-3000">1천만원-3천만원</option>
+                <option value="3000-5000">3천만원-5천만원</option>
                 <option value="5000-10000">5천만원-1억원</option>
                 <option value="over10000">1억원 이상</option>
               </select>
@@ -136,6 +141,23 @@ export default function InvestmentConsultantStep({ onNext, onPrevious }: Investm
                 <option value="house">주택 구입</option>
                 <option value="emergency">비상금 마련</option>
                 <option value="business">사업 자금</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">투자 관련 결정을 내릴 때, 가장 많이 참고하는 정보원은?</label>
+              <select 
+                value={formData.informationSource} 
+                onChange={(e) => setFormData(prev => ({ ...prev, informationSource: e.target.value }))}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+              >
+                <option value="">선택해주세요</option>
+                <option value="research-report">증권사 리포트 및 애널리스트 분석</option>
+                <option value="media-news">유튜브, 뉴스, 경제 방송</option>
+                <option value="community">온라인 커뮤니티, 카페, 블로그</option>
+                <option value="self-analysis">본인만의 분석과 판단</option>
+                <option value="expert-advice">전문가 상담 및 자문</option>
+                <option value="multiple-sources">여러 정보원을 종합적으로 활용</option>
               </select>
             </div>
           </div>
@@ -206,6 +228,36 @@ export default function InvestmentConsultantStep({ onNext, onPrevious }: Investm
                 <option value="realtime">실시간으로 확인</option>
               </select>
             </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">투자 후 예상과 다르게 흘러갈 때, 주로 어떻게 대응하시나요?</label>
+              <select 
+                value={formData.decisionResponse} 
+                onChange={(e) => setFormData(prev => ({ ...prev, decisionResponse: e.target.value }))}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-900 bg-white"
+              >
+                <option value="">선택해주세요</option>
+                <option value="data-analysis">데이터를 기반으로 이유를 분석하고 대응</option>
+                <option value="seek-advice">주변 의견이나 전문가 조언을 참고</option>
+                <option value="emotional">감정적으로 즉시 대응 (불안하면 매도, 욕심나면 매수)</option>
+                <option value="wait-observe">일정 기간 보류하며 상황을 관망</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">예상치 못한 외부 변수(전쟁, 환율 급등 등)가 생기면?</label>
+              <select 
+                value={formData.externalVariableResponse} 
+                onChange={(e) => setFormData(prev => ({ ...prev, externalVariableResponse: e.target.value }))}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-900 bg-white"
+              >
+                <option value="">선택해주세요</option>
+                <option value="long-term-view">장기 관점을 유지하며 흔들리지 않음</option>
+                <option value="partial-reduction">일정 부분 비중을 축소하여 리스크 관리</option>
+                <option value="cash-priority">현금화를 우선하여 안전자산으로 피함</option>
+                <option value="opportunity-seek">오히려 기회로 보고 추가 투자 고려</option>
+              </select>
+            </div>
           </div>
         </div>
 
@@ -226,7 +278,7 @@ export default function InvestmentConsultantStep({ onNext, onPrevious }: Investm
                 />
                 <div>
                   <div className="font-medium text-purple-900">🔍 참고형</div>
-                  <div className="text-sm text-purple-700">AI가 분석 결과와 추천안을 제시하지만, 모든 결정은 사용자가 직접</div>
+                  <div className="text-sm text-purple-700">AI는 분석만 제공합니다. 모든 판단은 직접 결정.</div>
                 </div>
               </label>
               
@@ -241,7 +293,7 @@ export default function InvestmentConsultantStep({ onNext, onPrevious }: Investm
                 />
                 <div>
                   <div className="font-medium text-purple-900">🤝 협업형</div>
-                  <div className="text-sm text-purple-700">AI가 구체적인 투자안을 제시하고, 사용자가 승인/수정하여 함께 결정</div>
+                  <div className="text-sm text-purple-700">AI가 투자안을 제시하고, 사용자가 승인 또는 수정하여 결정.</div>
                 </div>
               </label>
               
@@ -249,14 +301,14 @@ export default function InvestmentConsultantStep({ onNext, onPrevious }: Investm
                 <input 
                   type="radio" 
                   name="aiLevel" 
-                  value="delegation"
-                  checked={formData.aiInvolvementLevel === 'delegation'}
+                  value="guide"
+                  checked={formData.aiInvolvementLevel === 'guide'}
                   onChange={(e) => setFormData(prev => ({ ...prev, aiInvolvementLevel: e.target.value }))}
                   className="mt-1 mr-3"
                 />
                 <div>
-                  <div className="font-medium text-purple-900">🎯 위임형</div>
-                  <div className="text-sm text-purple-700">AI가 설정된 가이드라인 내에서 자동으로 투자 결정 및 실행</div>
+                  <div className="font-medium text-purple-900">🎯 가이드형</div>
+                  <div className="text-sm text-purple-700">AI가 설정된 범위 내에서 자동으로 판단하고 리포트로 보고합니다.</div>
                 </div>
               </label>
             </div>

@@ -10,7 +10,6 @@ import IndustryResearcherStep from '@/components/steps/IndustryResearcherStep'
 import StockAnalystStep from '@/components/steps/StockAnalystStep'
 import PortfolioManagerStep from '@/components/steps/PortfolioManagerStep'
 import TradingStrategistStep from '@/components/steps/TradingStrategistStep'
-import ProgressIndicator from '@/components/ui/ProgressIndicator'
 
 export interface UserData {
   riskTolerance?: 'conservative' | 'moderate' | 'aggressive'
@@ -30,7 +29,7 @@ export default function Home() {
   const [userData, setUserData] = useState<UserData>({})
 
   const steps = [
-    { component: IntroductionStep, title: '딥시그널 소개' },
+    { component: IntroductionStep, title: '시작하기' },
     { component: InvestmentConsultantStep, title: '투자상담매니저' },
     { component: InvestmentAnalysisStep, title: 'AI 투자 성향 분석' },
     { component: MarketStrategistStep, title: '시장전략가' },
@@ -61,13 +60,6 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
-        {/* 프로그레스 인디케이터 */}
-        <ProgressIndicator 
-          currentStep={currentStep} 
-          totalSteps={steps.length}
-          stepTitles={steps.map(step => step.title)}
-        />
-        
         {/* 현재 단계 컴포넌트 */}
         <div className="mt-8">
           <CurrentStepComponent 
