@@ -11,6 +11,8 @@ interface MarketStrategistStepProps {
 export default function MarketStrategistStep({ onNext, onPrevious, userData }: MarketStrategistStepProps) {
   const [expandedSection, setExpandedSection] = useState<string | null>(null)
   const [selectedEquity, setSelectedEquity] = useState<string | null>(null)
+  const [tooltipVisible, setTooltipVisible] = useState<string | null>(null)
+  const [detailModal, setDetailModal] = useState<{ isOpen: boolean, indicator: string, content: any }>({ isOpen: false, indicator: '', content: {} })
 
   // 글로벌 멀티에셋 브리핑 데이터
   const globalMarketData = {
@@ -95,14 +97,46 @@ export default function MarketStrategistStep({ onNext, onPrevious, userData }: M
       { name: 'CDX IG', value: '58bp', status: '낮음', range: '<70', color: 'green', label: '신용 양호' }
     ],
     
-    // AI 종합 인사이트
+    // AI 종합 인사이트 (대화체 브리핑)
     insights: [
-      { category: '금리', text: '미10Y 하락세 둔화 → 멀티플 확장 여지 축소' },
-      { category: '환율', text: 'DXY 약세 + USD/KRW 1,3,5일 하락 → EM/코스피 우호' },
-      { category: '변동성', text: 'VIX 14~16 박스 → 단기 랠리 지속성 점검 구간' },
-      { category: '크립토', text: 'BTC 200D 상회 → 위험자산 온기, 단 정책 리스크 주의' },
-      { category: '결론', text: 'Risk: Neutral~On (선별 베타 노출 유효)' }
-    ]
+      { category: '금리', text: '미국 장기금리가 잠시 멈췄습니다. 금리가 더 이상 빠지지 않으면, 주식의 밸류에이션이 더 올라가긴 어렵겠어요.' },
+      { category: '환율', text: '달러가 약해지고 원화가 강해지면서 외국인 자금이 코스피로 들어오기 좋은 환경입니다.' },
+      { category: '변동성', text: '시장이 안정적이지만, 너무 안심하긴 이른 단계예요. 단기 랠리가 얼마나 이어질지 확인이 필요합니다.' },
+      { category: '크립토', text: '비트코인이 장기 추세선 위에서 움직이고 있습니다. 투자심리는 살아있지만, 정책 변수엔 여전히 주의가 필요합니다.' },
+      { category: '결론', text: '종합적으로 보면 **"조심스럽게 긍정적"**입니다. 지금은 전면 투자보다는 기회가 있는 분야에 선택적으로 참여하는 시기로 보입니다.' }
+    ],
+    
+    // 지표 설명 데이터베이스 (AI 해석 툴팁)
+    indicatorExplanations: {
+      'VIX': {
+        oneLine: '주식시장의 불안도를 보여주는 지수예요. 20 아래면 시장이 비교적 안정적이라는 뜻입니다.',
+        detailed: '옵션시장 변동성을 기준으로 측정된 공포지수입니다. 지금 수준은 "평온하지만, 약간의 긴장감은 남아있는" 단계로 해석됩니다.'
+      },
+      'MOVE': {
+        oneLine: '채권시장의 변동성을 나타내는 지표예요. 낮을수록 채권시장이 안정적입니다.',
+        detailed: '채권 옵션 변동성 지수로, 금리 변화에 대한 시장의 불안감을 측정합니다. 100 이하는 채권시장이 비교적 차분한 상태를 의미합니다.'
+      },
+      'CDX IG': {
+        oneLine: '회사들의 부도 위험도를 나타내는 지표예요. 낮을수록 기업 신용이 좋다는 뜻입니다.',
+        detailed: '투자등급 기업들의 신용위험 프리미엄입니다. 70bp 이하는 기업 부도 위험이 낮고, 신용시장이 건전한 상태를 나타냅니다.'
+      },
+      'USD/KRW': {
+        oneLine: '원-달러 환율이에요. 숫자가 낮아지면 원화가 강해지는 것으로, 외국인 투자에 유리합니다.',
+        detailed: '환율 하락은 한국 자산의 달러 기준 가치 상승을 의미하며, 외국인 자금 유입과 코스피 상승에 긍정적 영향을 줍니다.'
+      },
+      'DXY': {
+        oneLine: '달러의 전반적인 강약을 나타내는 지표예요. 수치가 낮아지면 달러 약세로, 신흥국·코스피엔 좋은 환경입니다.',
+        detailed: '주요 6개국 통화 대비 달러의 가치를 나타냅니다. 최근 DXY 하락은 미국 금리 인하 기대와 함께 위험자산으로의 자금 이동 가능성을 높입니다.'
+      },
+      '미10Y': {
+        oneLine: '미국의 10년 만기 국채금리예요. 이 수치가 내려가면 주식시장은 보통 긍정적으로 반응합니다.',
+        detailed: '장기금리는 시장이 미래 금리를 어떻게 예상하는지를 보여줍니다. 최근 금리 하락은 "경기 둔화+금리 인하 기대"가 반영된 흐름이에요. 주식·특히 성장주엔 우호적 신호입니다.'
+      },
+      'BTC': {
+        oneLine: '비트코인은 위험자산의 "심리 온도계" 역할을 합니다. 오를 때는 시장에 "위험 감수 의지"가 커졌다는 뜻이에요.',
+        detailed: '금리와 달리 "미래 성장 기대"에 반응하는 자산입니다. 최근 상승은 유동성 회복 기대와 연관이 있습니다.'
+      }
+    }
   }
 
   const handleNext = () => {
@@ -147,6 +181,27 @@ export default function MarketStrategistStep({ onNext, onPrevious, userData }: M
     setExpandedSection(expandedSection === section ? null : section)
   }
 
+  // 지표 설명 툴팁 함수
+  const showTooltip = (indicator: string) => {
+    setTooltipVisible(indicator)
+  }
+
+  const hideTooltip = () => {
+    setTooltipVisible(null)
+  }
+
+  // 상세 모달 열기
+  const openDetailModal = (indicator: string) => {
+    const content = (globalMarketData.indicatorExplanations as any)[indicator]
+    if (content) {
+      setDetailModal({ isOpen: true, indicator, content })
+    }
+  }
+
+  const closeDetailModal = () => {
+    setDetailModal({ isOpen: false, indicator: '', content: {} })
+  }
+
   return (
     <div className="bg-white rounded-xl shadow-lg p-4 sm:p-8 max-w-4xl mx-auto">
       {/* 헤더 */}
@@ -175,12 +230,6 @@ export default function MarketStrategistStep({ onNext, onPrevious, userData }: M
         <div className="flex justify-between items-center mb-4">
           <h4 className="text-lg font-bold text-gray-800 flex items-center">
             📈 글로벌 주식
-            <button 
-              onClick={() => toggleSection('equities')}
-              className="ml-2 text-xs text-blue-600 hover:text-blue-800"
-            >
-              📎 근거 4개
-            </button>
           </h4>
         </div>
         
@@ -232,12 +281,6 @@ export default function MarketStrategistStep({ onNext, onPrevious, userData }: M
         <div className="flex justify-between items-center mb-4">
           <h4 className="text-lg font-bold text-gray-800 flex items-center">
             💱 환율 & 금리
-            <button 
-              onClick={() => toggleSection('fx')}
-              className="ml-2 text-xs text-blue-600 hover:text-blue-800"
-            >
-              📎 근거 7개
-            </button>
           </h4>
         </div>
         
@@ -287,12 +330,6 @@ export default function MarketStrategistStep({ onNext, onPrevious, userData }: M
         <div className="flex justify-between items-center mb-4">
           <h4 className="text-lg font-bold text-gray-800 flex items-center">
             🏗️ 원자재 & 크립토
-            <button 
-              onClick={() => toggleSection('commodities')}
-              className="ml-2 text-xs text-blue-600 hover:text-blue-800"
-            >
-              📎 근거 4개
-            </button>
           </h4>
         </div>
         
@@ -312,14 +349,35 @@ export default function MarketStrategistStep({ onNext, onPrevious, userData }: M
           
           {/* 크립토 */}
           {globalMarketData.crypto.map((crypto, index) => (
-            <div key={index} className="bg-purple-50 border border-purple-200 rounded-lg p-3">
+            <div key={index} className="bg-purple-50 border border-purple-200 rounded-lg p-3 relative">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-semibold text-gray-800">{crypto.name}</span>
+                <div className="flex items-center gap-1">
+                  <span className="text-sm font-semibold text-gray-800">{crypto.name}</span>
+                  {crypto.name === 'BTC' && (
+                    <button
+                      onMouseEnter={() => showTooltip('BTC')}
+                      onMouseLeave={hideTooltip}
+                      onClick={() => openDetailModal('BTC')}
+                      className="text-purple-500 hover:text-purple-700 text-xs"
+                    >
+                      ⓘ
+                    </button>
+                  )}
+                </div>
                 <span className="text-lg">{crypto.icon}</span>
               </div>
               <div className="text-lg font-bold text-gray-900">{crypto.value}</div>
               <div className={`text-xs ${getTrendColor(crypto.trend)} mb-1`}>{crypto.change}</div>
               <div className="text-xs text-purple-700">{crypto.label}</div>
+              
+              {/* BTC 툴팁 */}
+              {tooltipVisible === 'BTC' && crypto.name === 'BTC' && (
+                <div className="absolute z-10 bg-black text-white text-xs rounded p-2 bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64">
+                  <div className="font-semibold mb-1">BTC 설명</div>
+                  <div>{(globalMarketData.indicatorExplanations as any)['BTC']?.oneLine}</div>
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-black"></div>
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -330,12 +388,6 @@ export default function MarketStrategistStep({ onNext, onPrevious, userData }: M
         <div className="flex justify-between items-center mb-4">
           <h4 className="text-lg font-bold text-gray-800 flex items-center">
             📊 변동성 & 스트레스
-            <button 
-              onClick={() => toggleSection('volatility')}
-              className="ml-2 text-xs text-blue-600 hover:text-blue-800"
-            >
-              📎 근거 3개
-            </button>
           </h4>
         </div>
         
@@ -409,6 +461,63 @@ export default function MarketStrategistStep({ onNext, onPrevious, userData }: M
           자산배분 받기 →
         </button>
       </div>
+
+      {/* AI 지표 설명 상세 모달 */}
+      {detailModal.isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* 배경 오버레이 */}
+          <div
+            className="absolute inset-0 bg-black bg-opacity-50"
+            onClick={closeDetailModal}
+          />
+
+          {/* 모달 컨텐츠 */}
+          <div className="relative bg-white rounded-xl p-6 max-w-md w-full mx-4 shadow-2xl">
+            <div className="flex justify-between items-start mb-4">
+              <h3 className="text-lg font-bold text-gray-900 flex items-center">
+                📈 {detailModal.indicator} 설명
+              </h3>
+              <button
+                onClick={closeDetailModal}
+                className="text-gray-400 hover:text-gray-600 text-xl"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div className="bg-blue-50 rounded-lg p-4">
+                <h4 className="font-semibold text-blue-800 mb-2">한줄 요약</h4>
+                <p className="text-blue-700 text-sm leading-relaxed">
+                  {detailModal.content.oneLine}
+                </p>
+              </div>
+
+              <div className="bg-gray-50 rounded-lg p-4">
+                <h4 className="font-semibold text-gray-800 mb-2">조금 더 자세히</h4>
+                <p className="text-gray-700 text-sm leading-relaxed">
+                  {detailModal.content.detailed}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-6 pt-4 border-t border-gray-200">
+              <button
+                onClick={closeDetailModal}
+                className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                닫기
+              </button>
+            </div>
+            
+            <div className="mt-2 text-center">
+              <p className="text-xs text-gray-500 italic">
+                "AI가 복잡한 지표를 쉬운 말로 설명해드립니다"
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
