@@ -79,7 +79,7 @@ export default function InvestmentConsultantStep({ onNext, onPrevious }: Investm
               <select 
                 value={formData.investmentAmount} 
                 onChange={(e) => setFormData(prev => ({ ...prev, investmentAmount: e.target.value }))}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
               >
                 <option value="">선택해주세요</option>
                 <option value="under1000">1천만원 미만</option>
@@ -95,7 +95,7 @@ export default function InvestmentConsultantStep({ onNext, onPrevious }: Investm
               <select 
                 value={formData.investmentExperience} 
                 onChange={(e) => setFormData(prev => ({ ...prev, investmentExperience: e.target.value }))}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
               >
                 <option value="">선택해주세요</option>
                 <option value="none">투자 경험 없음</option>
@@ -111,7 +111,7 @@ export default function InvestmentConsultantStep({ onNext, onPrevious }: Investm
               <select 
                 value={formData.investmentPeriod} 
                 onChange={(e) => setFormData(prev => ({ ...prev, investmentPeriod: e.target.value }))}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
               >
                 <option value="">선택해주세요</option>
                 <option value="short">단기 (1년 미만)</option>
@@ -126,7 +126,7 @@ export default function InvestmentConsultantStep({ onNext, onPrevious }: Investm
               <select 
                 value={formData.investmentGoal} 
                 onChange={(e) => setFormData(prev => ({ ...prev, investmentGoal: e.target.value }))}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
               >
                 <option value="">선택해주세요</option>
                 <option value="retirement">은퇴 준비</option>
@@ -150,7 +150,7 @@ export default function InvestmentConsultantStep({ onNext, onPrevious }: Investm
               <select 
                 value={formData.lossResponse} 
                 onChange={(e) => setFormData(prev => ({ ...prev, lossResponse: e.target.value }))}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-900 bg-white"
               >
                 <option value="">선택해주세요</option>
                 <option value="panic-sell">즉시 매도하고 잠을 못 잠 (-50% 손실)</option>
@@ -165,7 +165,7 @@ export default function InvestmentConsultantStep({ onNext, onPrevious }: Investm
               <select 
                 value={formData.profitResponse} 
                 onChange={(e) => setFormData(prev => ({ ...prev, profitResponse: e.target.value }))}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-900 bg-white"
               >
                 <option value="">선택해주세요</option>
                 <option value="sell-all">전량 매도해서 수익 확정</option>
@@ -180,7 +180,7 @@ export default function InvestmentConsultantStep({ onNext, onPrevious }: Investm
               <select 
                 value={formData.importantFactor} 
                 onChange={(e) => setFormData(prev => ({ ...prev, importantFactor: e.target.value }))}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-900 bg-white"
               >
                 <option value="">선택해주세요</option>
                 <option value="preserve">원금 보존 (마이너스만 안 나면 됨)</option>
@@ -196,7 +196,7 @@ export default function InvestmentConsultantStep({ onNext, onPrevious }: Investm
               <select 
                 value={formData.newsFrequency} 
                 onChange={(e) => setFormData(prev => ({ ...prev, newsFrequency: e.target.value }))}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent text-gray-900 bg-white"
               >
                 <option value="">선택해주세요</option>
                 <option value="never">거의 안 봄 (관심 없음)</option>
