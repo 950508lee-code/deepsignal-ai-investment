@@ -425,8 +425,8 @@ export default function InvestmentAnalysisStep({ onNext, onPrevious, userData }:
           <p className="text-xs text-purple-100 italic mb-2">"정확하고 객관적인 데이터 분석가"</p>
         </div>
         <p className="text-sm text-gray-600 leading-relaxed">
-          안녕하세요! 저는 아리아입니다. 첨단 AI 기술을 활용하여<br/>
-          알렉스가 수집한 정보를 바탕으로 당신의 투자 성향을 과학적이고 객관적으로 분석해드리겠습니다.
+          안녕하세요! 저는 아리아예요. 첨단 AI 기술로<br/>
+          알렉스가 수집한 데이터를 분석해서 당신만의 투자 성향을 명확하게 파악해드릴게요.
         </p>
       </div>
 
@@ -434,7 +434,7 @@ export default function InvestmentAnalysisStep({ onNext, onPrevious, userData }:
         <div className="text-center mb-6">
           <div className="bg-white rounded-lg p-4 mb-4">
             <h3 className="text-xl font-bold text-blue-900 mb-2">
-              💡 성향 요약
+              💡 당신의 투자 성향이 나왔어요
             </h3>
             <div className="text-lg font-semibold text-blue-800 mb-2">
               {analysis.mbtiProfile.type}
@@ -477,55 +477,77 @@ export default function InvestmentAnalysisStep({ onNext, onPrevious, userData }:
               </div>
             </div>
             <div className="text-xs text-purple-600 mt-2 italic">
-              ({analysis.riskScore >= 9 ? '수익 기회에 더 민감한 응답 패턴' : analysis.riskScore >= 6 ? '리스크와 수익의 균형을 추구하는 패턴' : '손실 회피를 우선시하는 안정형 패턴'})
+              ({analysis.riskScore >= 9 ? '수익 기회에 적극적인 성향이 나타나고 있어요' : analysis.riskScore >= 6 ? '안정성과 수익성의 균형을 추구하시는 편이에요' : '안전한 투자를 우선시하는 신중한 성향이에요'})
             </div>
           </div>
         </div>
 
-        <div className="space-y-6">
-          <div className="bg-gray-50 rounded-lg p-4">
-            <h4 className="font-semibold text-gray-800 mb-3">📋 기본 투자 정보</h4>
-            <div className="grid md:grid-cols-2 gap-4 text-sm">
-              <div className="space-y-2">
-                <div><span className="font-medium">투자 가용 금액:</span> {getInvestmentAmountText(consultantData.investmentAmount)}</div>
-                <div><span className="font-medium">투자 경험:</span> {getInvestmentExperienceText(consultantData.investmentExperience)}</div>
-                <div><span className="font-medium">투자 기간:</span> {getInvestmentPeriodText(consultantData.investmentPeriod)}</div>
-              </div>
-              <div className="space-y-2">
-                <div><span className="font-medium">투자 목표:</span> {getInvestmentGoalText(consultantData.investmentGoal)}</div>
-                <div><span className="font-medium">AI 개입 수준:</span> {getAILevelText(consultantData.aiInvolvementLevel)}</div>
-                <div><span className="font-medium">위험도 점수:</span> {analysis.riskScore}/15</div>
+        <div className="space-y-4">
+          {/* 기본 투자 정보 카드 */}
+          <div className="bg-white rounded-2xl shadow-xl p-5 border border-gray-100">
+            <h4 className="text-base font-bold text-gray-800 mb-4 flex items-center">
+              📋 기본 투자 정보
+            </h4>
+            <div className="space-y-3">
+              <div className="grid grid-cols-1 gap-3 text-sm">
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <span className="font-medium text-gray-700">투자 가용 금액:</span>
+                  <span className="ml-2 text-gray-900">{getInvestmentAmountText(consultantData.investmentAmount)}</span>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <span className="font-medium text-gray-700">투자 경험:</span>
+                  <span className="ml-2 text-gray-900">{getInvestmentExperienceText(consultantData.investmentExperience)}</span>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <span className="font-medium text-gray-700">투자 기간:</span>
+                  <span className="ml-2 text-gray-900">{getInvestmentPeriodText(consultantData.investmentPeriod)}</span>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <span className="font-medium text-gray-700">투자 목표:</span>
+                  <span className="ml-2 text-gray-900">{getInvestmentGoalText(consultantData.investmentGoal)}</span>
+                </div>
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <span className="font-medium text-gray-700">AI 개입 수준:</span>
+                  <span className="ml-2 text-gray-900">{getAILevelText(consultantData.aiInvolvementLevel)}</span>
+                </div>
+                <div className="bg-blue-50 rounded-lg p-3">
+                  <span className="font-medium text-blue-700">위험도 점수:</span>
+                  <span className="ml-2 text-blue-900 font-bold">{analysis.riskScore}/15</span>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="bg-green-50 rounded-lg p-4">
-              <h4 className="font-bold text-green-800 mb-3 flex items-center">
-                💪 당신의 투자 강점
-              </h4>
-              <ul className="space-y-2">
-                {analysis.styleAnalysis.strengths.map((strength: string, index: number) => (
-                  <li key={index} className="flex items-start">
-                    <span className="text-green-500 mr-2 mt-1">✓</span>
-                    <span className="text-green-700 text-sm">{strength}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          {/* 투자 강점과 약점 카드 */}
+          <div className="bg-white rounded-2xl shadow-xl p-5 border border-gray-100">
+            <div className="space-y-4">
+              <div className="bg-green-50 rounded-xl p-4">
+                <h4 className="font-bold text-green-800 mb-3 flex items-center text-sm">
+                  💪 당신의 투자 강점
+                </h4>
+                <ul className="space-y-2">
+                  {analysis.styleAnalysis.strengths.map((strength: string, index: number) => (
+                    <li key={index} className="flex items-start">
+                      <span className="text-green-500 mr-2 mt-1 text-xs">✓</span>
+                      <span className="text-green-700 text-xs leading-relaxed">{strength}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
-            <div className="bg-orange-50 rounded-lg p-4">
-              <h4 className="font-bold text-orange-800 mb-3 flex items-center">
-                ⚠️ 주의해야 할 약점
-              </h4>
-              <ul className="space-y-2">
-                {analysis.styleAnalysis.weaknesses.map((weakness: string, index: number) => (
-                  <li key={index} className="flex items-start">
-                    <span className="text-orange-500 mr-2 mt-1">!</span>
-                    <span className="text-orange-700 text-sm">{weakness}</span>
-                  </li>
-                ))}
-              </ul>
+              <div className="bg-orange-50 rounded-xl p-4">
+                <h4 className="font-bold text-orange-800 mb-3 flex items-center text-sm">
+                  ⚠️ 주의해야 할 약점
+                </h4>
+                <ul className="space-y-2">
+                  {analysis.styleAnalysis.weaknesses.map((weakness: string, index: number) => (
+                    <li key={index} className="flex items-start">
+                      <span className="text-orange-500 mr-2 mt-1 text-xs">!</span>
+                      <span className="text-orange-700 text-xs leading-relaxed">{weakness}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
 
@@ -559,29 +581,32 @@ export default function InvestmentAnalysisStep({ onNext, onPrevious, userData }:
 
       <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl p-6 text-white text-center mb-6">
         <div className="text-2xl mb-3">✅</div>
-        <h3 className="text-xl font-bold mb-2">성향 분석 완료</h3>
+        <h3 className="text-xl font-bold mb-2">성향 분석이 완료됐어요</h3>
         <p className="text-blue-100 mb-4">
-          이제 '시장전략가 소피아'가 등장해, 당신의 투자 성향에 맞는<br />
-          거시전략과 시장 시나리오를 제시합니다.
+          이제 '시장전략가 소피아'가 등장해서<br />
+          당신의 투자 성향에 딱 맞는 시장 분석을 해드릴게요.
         </p>
         <div className="text-sm text-blue-200 italic">
-          “당신의 성향에 맞는 시장 포지션, 지금부터 함께 살펴보시죠.”
+          "당신만의 시장 포지션, 함께 찾아볼까요?"
         </div>
       </div>
 
-      <div className="flex justify-between">
-        <button
-          onClick={onPrevious}
-          className="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors"
-        >
-          ← 이전
-        </button>
-        <button
-          onClick={handleNext}
-          className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          시장 분석 받기 →
-        </button>
+      {/* 네비게이션 버튼 */}
+      <div className="bg-white rounded-2xl shadow-xl p-4 border border-gray-100">
+        <div className="flex gap-3">
+          <button
+            onClick={onPrevious}
+            className="flex-1 bg-gray-500 text-white py-3 px-4 rounded-xl hover:bg-gray-600 transition-all duration-200 font-medium text-sm"
+          >
+            ← 이전
+          </button>
+          <button
+            onClick={handleNext}
+            className="flex-[2] bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-medium text-sm transform hover:scale-105 active:scale-95"
+          >
+            시장 분석 받기 →
+          </button>
+        </div>
       </div>
     </div>
   )

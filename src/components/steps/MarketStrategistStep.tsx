@@ -35,13 +35,13 @@ export default function MarketStrategistStep({ onNext, onPrevious, userData }: M
       },
       { 
         region: 'US', 
-        name: 'S&P 500', 
-        value: '4,789', 
-        change1D: '+0.5%', 
-        change1W: '+1.8%', 
+        name: '나스닥', 
+        value: '15,240', 
+        change1D: '+0.7%', 
+        change1W: '+2.3%', 
         trend: 'up',
-        topSectors: ['Technology +2.5%', 'Energy +1.9%', 'Healthcare +1.2%'],
-        bottomSectors: ['Utilities -1.1%', 'REITs -0.9%', 'Consumer Staples -0.4%']
+        topSectors: ['Technology +3.1%', 'Communication +2.4%', 'Consumer Disc +1.8%'],
+        bottomSectors: ['Utilities -0.8%', 'Consumer Staples -0.5%', 'Real Estate -0.3%']
       },
       { 
         region: 'JP', 
@@ -106,8 +106,79 @@ export default function MarketStrategistStep({ onNext, onPrevious, userData }: M
       { category: '결론', text: '종합적으로 보면 **"조심스럽게 긍정적"**입니다. 지금은 전면 투자보다는 기회가 있는 분야에 선택적으로 참여하는 시기로 보입니다.' }
     ],
     
-    // 지표 설명 데이터베이스 (AI 해석 툴팁)
+    // 지표 설명 데이터베이스 (AI 해석 툴팁 - 전체 지표)
     indicatorExplanations: {
+      // 주식 지수
+      '코스피': {
+        oneLine: '한국 대표 주식 지수예요. 이 지수가 오르면 한국 경제와 기업들이 좋아지고 있다는 의미예요.',
+        detailed: '코스피(KOSPI)는 한국거래소에 상장된 대형주 200개를 대상으로 한 지수입니다. 2,600포인트 이상이면 경기 회복이 기대되는 구간이에요.'
+      },
+      '나스닥': {
+        oneLine: '미국 전자/기술주 중심 지수예요. 애플, 테슬라, 구글 같은 기술주들의 상황을 보여줘요.',
+        detailed: '나스닥(NASDAQ)은 미국의 기술 혁신 기업들이 대거 상장된 거래소입니다. 15,000포인트 이상이면 글로벌 기술주들이 좋은 흐름을 보이고 있다는 의미예요.'
+      },
+      '닛케이': {
+        oneLine: '일본 대표 주식 지수예요. 일본 경제와 엔화 가치에 따라 영향을 받아요.',
+        detailed: '닛케이 225는 일본의 대표적인 대기업 225개를 대상으로 한 지수입니다. 39,000포인트 이상이면 일본 버블 절정 이후 최고 수준을 유지하고 있다는 의미예요.'
+      },
+      'HSI': {
+        oneLine: '홍콩 항생 지수예요. 중국 본토와 홍콩 경제 상황을 보여주는 지표예요.',
+        detailed: '홍콩 항생지수(HSI)는 홍콩 거래소에 상장된 주요 기업들의 주가를 반영합니다. 20,000포인트 이상이면 중국 대륙 경제 회복 기대감이 높아지고 있다는 신호예요.'
+      },
+      
+      // 환율 지표
+      'USD/KRW': {
+        oneLine: '원-달러 환율이에요. 숫자가 낮아지면 원화가 강해지는 것으로, 외국인 투자에 유리해요.',
+        detailed: '환율 하락은 한국 자산의 달러 기준 가치 상승을 의미하며, 외국인 자금 유입과 코스피 상승에 긍정적 영향을 줘요. 1,300원 아래로 내려가면 원화 강세 구간이에요.'
+      },
+      'USD/JPY': {
+        oneLine: '달러-엔화 환율이에요. 일본의 금리 정책과 미국 금리 차이에 따라 변동해요.',
+        detailed: '미국과 일본 간 금리 차이가 줄어들면 엔화가 강세를 보이게 됩니다. 150엔 아래로 내려가면 엔화 강세 구간으로 보여요.'
+      },
+      'DXY': {
+        oneLine: '달러의 전반적인 강약을 나타내는 지표예요. 수치가 낮아지면 달러 약세로, 신흥국·코스피엔 좋은 환경이에요.',
+        detailed: '주요 6개국 통화 대비 달러의 가치를 나타냅니다. 최근 DXY 하락은 미국 금리 인하 기대와 함께 위험자산으로의 자금 이동 가능성을 높여요. 103 이하는 신흥국 좋은 구간이에요.'
+      },
+      
+      // 금리 지표
+      '미10Y': {
+        oneLine: '미국의 10년 만기 국채금리예요. 이 수치가 내려가면 주식시장은 보통 긍정적으로 반응합니다.',
+        detailed: '장기금리는 시장이 미래 금리를 어떻게 예상하는지를 보여줍니다. 최근 금리 하락은 "경기 둔화+금리 인하 기대"가 반영된 흐름이에요. 주식·특히 성장주엔 우호적 신호입니다.'
+      },
+      '미2Y': {
+        oneLine: '미국 2년 국채금리예요. 연준의 단기 금리 정책 방향을 미리 보여주는 지표예요.',
+        detailed: '연준의 단기 금리 정책 방향을 예측하는 데 중요한 지표입니다. 금리가 내려가면 통화 완화 기대감이 높아지고 있다는 의미예요.'
+      },
+      '한10Y': {
+        oneLine: '한국 10년 국채금리예요. 한국 경제와 금리 전망을 반영하는 지표예요.',
+        detailed: '한국의 장기금리 기준으로, 3.5% 전후는 안정적인 수준으로 평가됩니다. 미국 금리와의 차이도 중요한 요소예요.'
+      },
+      '2s10s': {
+        oneLine: '미국 2년과 10년 금리 차이예요. 마이너스면 경기 침체 우려, 플러스면 정상적 경기 상황이에요.',
+        detailed: '일반적으로 장기금리가 단기금리보다 높은 것이 정상이에요. 역전 상황이 해소되면 경기 회복 기대감이 높아진다는 의미예요.'
+      },
+      
+      // 원자재
+      '금(XAU)': {
+        oneLine: '금 가격이에요. 불안할 때 오르고, 안정될 때 내리는 안전자산의 대표주자예요.',
+        detailed: '전통적인 안전자산으로, 인플레이션이나 지정학적 리스크가 높아질 때 수요가 증가해요. $2,000 이상은 리스크 헤지 수요가 높은 상황을 의미해요.'
+      },
+      'WTI': {
+        oneLine: '미국 원유 가격이에요. 세계 경제 성장과 에너지 수요를 반영하는 지표예요.',
+        detailed: '서부 텍사스 중질유(WTI)는 글로벌 원유 가격의 기준입니다. $80 이상은 경제 성장 기대와 에너지 수요 증가를 의미해요.'
+      },
+      
+      // 암호화폐
+      'BTC': {
+        oneLine: '비트코인은 위험자산의 "심리 온도계" 역할을 합니다. 오를 때는 시장에 "위험 감수 의지"가 커졌다는 뜻이에요.',
+        detailed: '금리와 달리 "미래 성장 기대"에 반응하는 자산입니다. 최근 상승은 유동성 회복 기대와 연관이 있습니다.'
+      },
+      'ETH': {
+        oneLine: '이더리움 가격이에요. 비트코인 다음으로 큰 암호화폐로, 디파이와 NFT 플랫폼으로 유명해요.',
+        detailed: '스마트 컨트랙트와 디파이(DeFi) 애플리케이션의 기반이 되는 블록체인이에요. 알트코인 전체의 심리를 보여주는 지표로 활용돼요.'
+      },
+      
+      // 변동성 지표
       'VIX': {
         oneLine: '주식시장의 불안도를 보여주는 지수예요. 20 아래면 시장이 비교적 안정적이라는 뜻입니다.',
         detailed: '옵션시장 변동성을 기준으로 측정된 공포지수입니다. 지금 수준은 "평온하지만, 약간의 긴장감은 남아있는" 단계로 해석됩니다.'
@@ -119,22 +190,6 @@ export default function MarketStrategistStep({ onNext, onPrevious, userData }: M
       'CDX IG': {
         oneLine: '회사들의 부도 위험도를 나타내는 지표예요. 낮을수록 기업 신용이 좋다는 뜻입니다.',
         detailed: '투자등급 기업들의 신용위험 프리미엄입니다. 70bp 이하는 기업 부도 위험이 낮고, 신용시장이 건전한 상태를 나타냅니다.'
-      },
-      'USD/KRW': {
-        oneLine: '원-달러 환율이에요. 숫자가 낮아지면 원화가 강해지는 것으로, 외국인 투자에 유리합니다.',
-        detailed: '환율 하락은 한국 자산의 달러 기준 가치 상승을 의미하며, 외국인 자금 유입과 코스피 상승에 긍정적 영향을 줍니다.'
-      },
-      'DXY': {
-        oneLine: '달러의 전반적인 강약을 나타내는 지표예요. 수치가 낮아지면 달러 약세로, 신흥국·코스피엔 좋은 환경입니다.',
-        detailed: '주요 6개국 통화 대비 달러의 가치를 나타냅니다. 최근 DXY 하락은 미국 금리 인하 기대와 함께 위험자산으로의 자금 이동 가능성을 높입니다.'
-      },
-      '미10Y': {
-        oneLine: '미국의 10년 만기 국채금리예요. 이 수치가 내려가면 주식시장은 보통 긍정적으로 반응합니다.',
-        detailed: '장기금리는 시장이 미래 금리를 어떻게 예상하는지를 보여줍니다. 최근 금리 하락은 "경기 둔화+금리 인하 기대"가 반영된 흐름이에요. 주식·특히 성장주엔 우호적 신호입니다.'
-      },
-      'BTC': {
-        oneLine: '비트코인은 위험자산의 "심리 온도계" 역할을 합니다. 오를 때는 시장에 "위험 감수 의지"가 커졌다는 뜻이에요.',
-        detailed: '금리와 달리 "미래 성장 기대"에 반응하는 자산입니다. 최근 상승은 유동성 회복 기대와 연관이 있습니다.'
       }
     }
   }
@@ -198,6 +253,7 @@ export default function MarketStrategistStep({ onNext, onPrevious, userData }: M
     }
   }
 
+  // 상세 모달 닫기
   const closeDetailModal = () => {
     setDetailModal({ isOpen: false, indicator: '', content: {} })
   }
@@ -242,14 +298,30 @@ export default function MarketStrategistStep({ onNext, onPrevious, userData }: M
               }`}
               onClick={() => setSelectedEquity(selectedEquity === equity.region ? null : equity.region)}
             >
-              <div className="text-center">
+              <div 
+                className="text-center cursor-pointer relative"
+                onMouseEnter={() => showTooltip(equity.name)}
+                onMouseLeave={hideTooltip}
+                onClick={() => openDetailModal(equity.name)}
+              >
                 <div className="text-xs font-bold text-gray-500 mb-1">{equity.region}</div>
-                <div className="text-sm font-semibold text-gray-800 mb-1">{equity.name}</div>
+                <div className="text-sm font-semibold text-gray-800 mb-1 flex items-center justify-center">
+                  {equity.name}
+                  <span className="ml-1 text-blue-500">ℹ️</span>
+                </div>
                 <div className="text-lg font-bold text-gray-900">{equity.value}</div>
                 <div className="flex justify-center gap-2 text-xs mt-2">
                   <span className={getTrendColor(equity.trend)}>{equity.change1D}</span>
                   <span className={getTrendColor(equity.trend)}>{equity.change1W}</span>
                 </div>
+                
+                {/* AI 툴팁 */}
+                {tooltipVisible === equity.name && globalMarketData.indicatorExplanations && (
+                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-black text-white text-xs rounded-lg max-w-64 z-10">
+                    {(globalMarketData.indicatorExplanations as any)[equity.name]?.oneLine || '이 지표에 대한 설명을 준비중입니다.'}
+                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-black"></div>
+                  </div>
+                )}
               </div>
               
               {/* 섹터 상위/하위 (터치 시 표시) */}
@@ -290,15 +362,32 @@ export default function MarketStrategistStep({ onNext, onPrevious, userData }: M
             <h5 className="text-sm font-semibold text-gray-700 mb-2">환율</h5>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {globalMarketData.fxRates.map((fx, index) => (
-                <div key={index} className="bg-gray-50 rounded-lg p-3">
+                <div 
+                  key={index} 
+                  className="bg-gray-50 rounded-lg p-3 cursor-pointer relative"
+                  onMouseEnter={() => showTooltip(fx.name)}
+                  onMouseLeave={hideTooltip}
+                  onClick={() => openDetailModal(fx.name)}
+                >
                   <div className="flex justify-between items-start mb-1">
-                    <span className="text-sm font-semibold text-gray-800">{fx.name}</span>
+                    <span className="text-sm font-semibold text-gray-800 flex items-center">
+                      {fx.name}
+                      <span className="ml-1 text-blue-500 text-xs">ℹ️</span>
+                    </span>
                     <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
                       {fx.label}
                     </span>
                   </div>
                   <div className="text-lg font-bold text-gray-900">{fx.value}</div>
                   <div className={`text-xs ${getTrendColor(fx.trend)}`}>{fx.change}</div>
+                  
+                  {/* AI 툴팁 */}
+                  {tooltipVisible === fx.name && globalMarketData.indicatorExplanations && (
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-black text-white text-xs rounded-lg max-w-64 z-10">
+                      {(globalMarketData.indicatorExplanations as any)[fx.name]?.oneLine || '이 지표에 대한 설명을 준비중입니다.'}
+                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-black"></div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -309,15 +398,32 @@ export default function MarketStrategistStep({ onNext, onPrevious, userData }: M
             <h5 className="text-sm font-semibold text-gray-700 mb-2">금리</h5>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {globalMarketData.bonds.map((bond, index) => (
-                <div key={index} className="bg-gray-50 rounded-lg p-3">
+                <div 
+                  key={index} 
+                  className="bg-gray-50 rounded-lg p-3 cursor-pointer relative"
+                  onMouseEnter={() => showTooltip(bond.name)}
+                  onMouseLeave={hideTooltip}
+                  onClick={() => openDetailModal(bond.name)}
+                >
                   <div className="flex justify-between items-start mb-1">
-                    <span className="text-sm font-semibold text-gray-800">{bond.name}</span>
+                    <span className="text-sm font-semibold text-gray-800 flex items-center">
+                      {bond.name}
+                      <span className="ml-1 text-blue-500 text-xs">ℹ️</span>
+                    </span>
                     <span className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full">
                       {bond.label}
                     </span>
                   </div>
                   <div className="text-lg font-bold text-gray-900">{bond.value}</div>
                   <div className={`text-xs ${getTrendColor(bond.trend)}`}>{bond.change}</div>
+                  
+                  {/* AI 툴팁 */}
+                  {tooltipVisible === bond.name && globalMarketData.indicatorExplanations && (
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-black text-white text-xs rounded-lg max-w-64 z-10">
+                      {(globalMarketData.indicatorExplanations as any)[bond.name]?.oneLine || '이 지표에 대한 설명을 준비중입니다.'}
+                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-black"></div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -336,37 +442,63 @@ export default function MarketStrategistStep({ onNext, onPrevious, userData }: M
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {/* 원자재 */}
           {globalMarketData.commodities.map((comm, index) => (
-            <div key={index} className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+            <div 
+              key={index} 
+              className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 cursor-pointer relative"
+              onMouseEnter={() => showTooltip(comm.name)}
+              onMouseLeave={hideTooltip}
+              onClick={() => openDetailModal(comm.name)}
+            >
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-semibold text-gray-800">{comm.name}</span>
+                <span className="text-sm font-semibold text-gray-800 flex items-center">
+                  {comm.name}
+                  <span className="ml-1 text-blue-500 text-xs">ℹ️</span>
+                </span>
                 <span className="text-lg">{comm.icon}</span>
               </div>
               <div className="text-lg font-bold text-gray-900">{comm.value}</div>
               <div className={`text-xs ${getTrendColor(comm.trend)} mb-1`}>{comm.change}</div>
+              
+              {/* AI 툴팁 */}
+              {tooltipVisible === comm.name && globalMarketData.indicatorExplanations && (
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-black text-white text-xs rounded-lg max-w-64 z-10">
+                  {(globalMarketData.indicatorExplanations as any)[comm.name]?.oneLine || '이 지표에 대한 설명을 준비중입니다.'}
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-black"></div>
+                </div>
+              )}
               <div className="text-xs text-yellow-700">{comm.label}</div>
             </div>
           ))}
           
           {/* 크립토 */}
           {globalMarketData.crypto.map((crypto, index) => (
-            <div key={index} className="bg-purple-50 border border-purple-200 rounded-lg p-3 relative">
+            <div 
+              key={index} 
+              className="bg-purple-50 border border-purple-200 rounded-lg p-3 cursor-pointer relative"
+              onMouseEnter={() => showTooltip(crypto.name)}
+              onMouseLeave={hideTooltip}
+              onClick={() => openDetailModal(crypto.name)}
+            >
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-1">
-                  <span className="text-sm font-semibold text-gray-800">{crypto.name}</span>
-                  {crypto.name === 'BTC' && (
-                    <button
-                      onMouseEnter={() => showTooltip('BTC')}
-                      onMouseLeave={hideTooltip}
-                      onClick={() => openDetailModal('BTC')}
-                      className="text-purple-500 hover:text-purple-700 text-xs"
-                    >
-                      ⓘ
-                    </button>
-                  )}
+                  <span className="text-sm font-semibold text-gray-800 flex items-center">
+                    {crypto.name}
+                    <span className="ml-1 text-blue-500 text-xs">ℹ️</span>
+                  </span>
                 </div>
                 <span className="text-lg">{crypto.icon}</span>
               </div>
               <div className="text-lg font-bold text-gray-900">{crypto.value}</div>
+              <div className={`text-xs ${getTrendColor(crypto.trend)} mb-1`}>{crypto.change}</div>
+              <div className="text-xs text-purple-700">{crypto.label}</div>
+              
+              {/* AI 툴팁 */}
+              {tooltipVisible === crypto.name && globalMarketData.indicatorExplanations && (
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-black text-white text-xs rounded-lg max-w-64 z-10">
+                  {(globalMarketData.indicatorExplanations as any)[crypto.name]?.oneLine || '이 지표에 대한 설명을 준비중입니다.'}
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-black"></div>
+                </div>
+              )}
               <div className={`text-xs ${getTrendColor(crypto.trend)} mb-1`}>{crypto.change}</div>
               <div className="text-xs text-purple-700">{crypto.label}</div>
               
@@ -393,9 +525,18 @@ export default function MarketStrategistStep({ onNext, onPrevious, userData }: M
         
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           {globalMarketData.volatility.map((vol, index) => (
-            <div key={index} className="bg-white border border-gray-200 rounded-lg p-4">
+            <div 
+              key={index} 
+              className="bg-white border border-gray-200 rounded-lg p-4 cursor-pointer relative"
+              onMouseEnter={() => showTooltip(vol.name)}
+              onMouseLeave={hideTooltip}
+              onClick={() => openDetailModal(vol.name)}
+            >
               <div className="flex justify-between items-start mb-2">
-                <span className="text-sm font-semibold text-gray-800">{vol.name}</span>
+                <span className="text-sm font-semibold text-gray-800 flex items-center">
+                  {vol.name}
+                  <span className="ml-1 text-blue-500 text-xs">ℹ️</span>
+                </span>
                 <span className={`text-xs px-2 py-1 rounded-full ${getVolatilityColor(vol.color)}`}>
                   {vol.status}
                 </span>
@@ -403,6 +544,14 @@ export default function MarketStrategistStep({ onNext, onPrevious, userData }: M
               <div className="text-2xl font-bold text-gray-900 mb-1">{vol.value}</div>
               <div className="text-xs text-gray-500 mb-2">{vol.range}</div>
               <div className="text-xs text-gray-600">{vol.label}</div>
+              
+              {/* AI 툴팁 */}
+              {tooltipVisible === vol.name && globalMarketData.indicatorExplanations && (
+                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-black text-white text-xs rounded-lg max-w-64 z-10">
+                  {(globalMarketData.indicatorExplanations as any)[vol.name]?.oneLine || '이 지표에 대한 설명을 준비중입니다.'}
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-black"></div>
+                </div>
+              )}
             </div>
           ))}
         </div>
