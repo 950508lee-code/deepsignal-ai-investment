@@ -416,12 +416,18 @@ export default function InvestmentAnalysisStep({ onNext, onPrevious, userData }:
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-8">
-      <div className="text-center mb-8">
-        <div className="text-4xl mb-4">🤖</div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">AI 성향분석 아리아</h2>
-        <p className="text-purple-600 font-medium mb-2 italic">"정확하고 객관적인 데이터 분석가"</p>
-        <p className="text-gray-600">안녕하세요! 저는 아리아입니다. 첨단 AI 기술을 활용하여 알렉스가 수집한 정보를 바탕으로 당신의 투자 성향을 과학적이고 객관적으로 분석해드리겠습니다.</p>
+    <div className="space-y-4">
+      {/* AI 전문가 소개 카드 */}
+      <div className="bg-white rounded-2xl shadow-xl p-5 text-center border border-gray-100">
+        <div className="relative mb-4 p-4 bg-gradient-to-br from-purple-600 to-purple-700 rounded-xl text-white">
+          <div className="text-3xl mb-2">🤖</div>
+          <h2 className="text-lg font-bold mb-1">AI 성향분석 아리아</h2>
+          <p className="text-xs text-purple-100 italic mb-2">"정확하고 객관적인 데이터 분석가"</p>
+        </div>
+        <p className="text-sm text-gray-600 leading-relaxed">
+          안녕하세요! 저는 아리아입니다. 첨단 AI 기술을 활용하여<br/>
+          알렉스가 수집한 정보를 바탕으로 당신의 투자 성향을 과학적이고 객관적으로 분석해드리겠습니다.
+        </p>
       </div>
 
       <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 mb-6">

@@ -46,22 +46,45 @@ export default function Home() {
     }
     if (currentStep < steps.length - 1) {
       setCurrentStep(prev => prev + 1)
+      // 페이지 상단으로 스크롤
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }
 
   const handlePrevious = () => {
     if (currentStep > 0) {
       setCurrentStep(prev => prev - 1)
+      // 페이지 상단으로 스크롤
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }
 
   const CurrentStepComponent = steps[currentStep].component
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-        {/* 현재 단계 컴포넌트 */}
-        <div className="mt-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+      {/* 진행률 표시 바 */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-sm border-b border-gray-200">
+        <div className="h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-indigo-500" 
+             style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}></div>
+        <div className="px-4 py-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 animate-pulse"></div>
+              <span className="text-sm font-medium text-gray-700">
+                {steps[currentStep].title}
+              </span>
+            </div>
+            <div className="text-xs text-gray-500 font-medium">
+              {currentStep + 1} / {steps.length}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="pt-16 pb-6 px-3 sm:px-4">
+        <div className="max-w-md mx-auto">
+          {/* 현재 단계 컴포넌트 */}
           <CurrentStepComponent 
             userData={userData}
             onNext={handleNext}

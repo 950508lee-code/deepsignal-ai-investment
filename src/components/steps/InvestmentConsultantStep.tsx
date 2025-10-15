@@ -65,25 +65,37 @@ export default function InvestmentConsultantStep({ onNext, onPrevious, userData 
   const sectors = ['기술주', '헬스케어', '금융', '에너지', '소비재', '부동산', '채권', '원자재']
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-8">
-      <div className="text-center mb-8">
-        <div className="text-4xl mb-4">👨‍💼</div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">투자상담매니저 알렉스</h2>
-        <p className="text-blue-600 font-medium mb-2 italic">"신중하고 체계적인 분석 전문가"</p>
-        <p className="text-gray-600">안녕하세요! 저는 알렉스입니다. 친근하고 신뢰할 수 있는 투자 전문가로서, 당신의 투자 성향과 목표를 꼼꼼히 파악하고 기본 정보를 수집하겠습니다.</p>
+    <div className="space-y-4">
+      {/* AI 전문가 소개 카드 */}
+      <div className="bg-white rounded-2xl shadow-xl p-5 text-center border border-gray-100">
+        <div className="relative mb-4 p-4 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl text-white">
+          <div className="text-3xl mb-2">👨‍💼</div>
+          <h2 className="text-lg font-bold mb-1">투자상담매니저 알렉스</h2>
+          <p className="text-xs text-blue-100 italic mb-2">"신중하고 체계적인 분석 전문가"</p>
+        </div>
+        <p className="text-sm text-gray-600 leading-relaxed">
+          안녕하세요! 저는 알렉스입니다. 친근하고 신뢰할 수 있는 투자 전문가로서,<br/>
+          당신의 투자 성향과 목표를 꼼꼼히 파악하고 기본 정보를 수집하겠습니다.
+        </p>
       </div>
 
-      <div className="space-y-8">
+      <div className="space-y-4">
         {/* 1. 기본 투자 정보 */}
-        <div className="bg-blue-50 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-blue-900 mb-4">1️⃣ 기본 투자 정보</h3>
-          <div className="grid md:grid-cols-2 gap-4">
+        <div className="bg-white rounded-2xl shadow-xl p-5 border border-gray-100">
+          <div className="flex items-center mb-4">
+            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm mr-3">
+              1
+            </div>
+            <h3 className="text-base font-bold text-gray-900">기본 투자 정보</h3>
+          </div>
+          
+          <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">현재 투자 가능한 최대 금액 (비상금 제외)</label>
               <select 
                 value={formData.investmentAmount} 
                 onChange={(e) => setFormData(prev => ({ ...prev, investmentAmount: e.target.value }))}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white text-sm"
               >
                 <option value="">선택해주세요</option>
                 <option value="under500">500만원 미만</option>
@@ -100,7 +112,7 @@ export default function InvestmentConsultantStep({ onNext, onPrevious, userData 
               <select 
                 value={formData.investmentExperience} 
                 onChange={(e) => setFormData(prev => ({ ...prev, investmentExperience: e.target.value }))}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white text-sm"
               >
                 <option value="">선택해주세요</option>
                 <option value="none">투자 경험 없음</option>
@@ -116,7 +128,7 @@ export default function InvestmentConsultantStep({ onNext, onPrevious, userData 
               <select 
                 value={formData.investmentPeriod} 
                 onChange={(e) => setFormData(prev => ({ ...prev, investmentPeriod: e.target.value }))}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white text-sm"
               >
                 <option value="">선택해주세요</option>
                 <option value="short">단기 (1년 미만)</option>
@@ -131,7 +143,7 @@ export default function InvestmentConsultantStep({ onNext, onPrevious, userData 
               <select 
                 value={formData.investmentGoal} 
                 onChange={(e) => setFormData(prev => ({ ...prev, investmentGoal: e.target.value }))}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white text-sm"
               >
                 <option value="">선택해주세요</option>
                 <option value="retirement">은퇴 준비</option>
@@ -149,7 +161,7 @@ export default function InvestmentConsultantStep({ onNext, onPrevious, userData 
               <select 
                 value={formData.informationSource} 
                 onChange={(e) => setFormData(prev => ({ ...prev, informationSource: e.target.value }))}
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+                className="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white text-sm"
               >
                 <option value="">선택해주세요</option>
                 <option value="research-report">증권사 리포트 및 애널리스트 분석</option>
@@ -164,8 +176,13 @@ export default function InvestmentConsultantStep({ onNext, onPrevious, userData 
         </div>
 
         {/* 2. 위험 감내 성향 */}
-        <div className="bg-red-50 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-red-900 mb-4">2️⃣ 위험 감내 성향</h3>
+        <div className="bg-white rounded-2xl shadow-xl p-5 border border-gray-100">
+          <div className="flex items-center mb-4">
+            <div className="w-8 h-8 bg-gradient-to-r from-red-500 to-red-600 rounded-full flex items-center justify-center text-white font-bold text-sm mr-3">
+              2
+            </div>
+            <h3 className="text-base font-bold text-gray-900">위험 감내 성향</h3>
+          </div>
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">1,000만원 투자 시 500만원 손실이 발생했다면?</label>
@@ -318,20 +335,23 @@ export default function InvestmentConsultantStep({ onNext, onPrevious, userData 
 
       </div>
 
-      <div className="flex justify-between mt-8">
-        <button
-          onClick={onPrevious}
-          className="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors"
-        >
-          ← 이전
-        </button>
-        <button
-          onClick={handleSubmit}
-          disabled={!formData.investmentAmount || !formData.lossResponse || !formData.aiInvolvementLevel}
-          className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
-        >
-          AI 분석 시작 →
-        </button>
+      {/* 네비게이션 버튼 */}
+      <div className="bg-white rounded-2xl shadow-xl p-4 border border-gray-100">
+        <div className="flex gap-3">
+          <button
+            onClick={onPrevious}
+            className="flex-1 bg-gray-500 text-white py-3 px-4 rounded-xl hover:bg-gray-600 transition-all duration-200 font-medium text-sm"
+          >
+            ← 이전
+          </button>
+          <button
+            onClick={handleSubmit}
+            disabled={!formData.investmentAmount || !formData.lossResponse || !formData.aiInvolvementLevel}
+            className="flex-[2] bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-medium text-sm disabled:from-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95"
+          >
+            AI 분석 시작 →
+          </button>
+        </div>
       </div>
     </div>
   )
