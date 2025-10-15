@@ -37,8 +37,8 @@ export default function StockAnalystStep({ onNext, onPrevious, userData }: Stock
       ]
     }
     
-    const recommendations = []
-    selectedSectors.forEach(sector => {
+    const recommendations: any[] = []
+    selectedSectors.forEach((sector: any) => {
       if (stocksByCategory[sector.name]) {
         recommendations.push(...stocksByCategory[sector.name])
       }
@@ -92,7 +92,7 @@ export default function StockAnalystStep({ onNext, onPrevious, userData }: Stock
       <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg p-6 mb-8">
         <h3 className="text-lg font-bold text-indigo-900 mb-3">선택한 섹터 기반 종목 추천</h3>
         <div className="flex flex-wrap gap-2 mb-4">
-          {selectedSectors.map((sector, index) => (
+                    {selectedSectors.map((sector: any, index: number) => (
             <span key={index} className="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm">
               {sector.name}
             </span>

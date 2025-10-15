@@ -10,7 +10,17 @@ export default function PortfolioManagerStep({ onNext, onPrevious, userData }: P
   const investmentAmount = 10000000 // 1천만원 기본
   
   const createPortfolio = () => {
-    const portfolio = {
+    const portfolio: {
+      totalAmount: number
+      allocations: Array<{
+        category: string
+        amount: number
+        percentage: number
+        stocks: any[]
+      }>
+      expectedReturn: number
+      riskLevel: string
+    } = {
       totalAmount: investmentAmount,
       allocations: [],
       expectedReturn: 0,
@@ -133,7 +143,7 @@ export default function PortfolioManagerStep({ onNext, onPrevious, userData }: P
         <div className="bg-white rounded-lg p-4">
           <h4 className="font-semibold text-gray-800 mb-3">선택된 주식 종목</h4>
           <div className="grid md:grid-cols-3 gap-3">
-            {selectedStocks.map((stock, index) => (
+            {selectedStocks.map((stock: any, index: number) => (
               <div key={index} className="bg-blue-50 p-3 rounded">
                 <div className="font-medium text-blue-900">{stock.symbol}</div>
                 <div className="text-sm text-blue-700">{stock.name}</div>

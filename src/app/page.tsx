@@ -74,8 +74,6 @@ export default function Home() {
             userData={userData}
             onNext={handleNext}
             onPrevious={handlePrevious}
-            currentStep={currentStep}
-            totalSteps={steps.length}
           />
         </div>
       </div>

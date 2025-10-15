@@ -384,7 +384,7 @@ export default function InvestmentAnalysisStep({ onNext, onPrevious, userData }:
             <div className="bg-green-50 rounded-lg p-4">
               <h4 className="font-semibold text-green-800 mb-3">💪 당신의 투자 강점</h4>
               <ul className="space-y-2">
-                {analysis.styleAnalysis.strengths.map((strength, index) => (
+                {analysis.styleAnalysis.strengths.map((strength: string, index: number) => (
                   <li key={index} className="flex items-start">
                     <span className="text-green-500 mr-2 mt-1">✓</span>
                     <span className="text-green-700 text-sm">{strength}</span>
@@ -396,7 +396,7 @@ export default function InvestmentAnalysisStep({ onNext, onPrevious, userData }:
             <div className="bg-red-50 rounded-lg p-4">
               <h4 className="font-semibold text-red-800 mb-3">⚠️ 주의해야 할 약점</h4>
               <ul className="space-y-2">
-                {analysis.styleAnalysis.weaknesses.map((weakness, index) => (
+                {analysis.styleAnalysis.weaknesses.map((weakness: string, index: number) => (
                   <li key={index} className="flex items-start">
                     <span className="text-red-500 mr-2 mt-1">!</span>
                     <span className="text-red-700 text-sm">{weakness}</span>
@@ -410,7 +410,7 @@ export default function InvestmentAnalysisStep({ onNext, onPrevious, userData }:
             <div className="bg-blue-50 rounded-lg p-4">
               <h4 className="font-semibold text-blue-800 mb-3">🚀 강점 극대화 방안</h4>
               <ul className="space-y-2">
-                {analysis.styleAnalysis.strengthMaximization.map((method, index) => (
+                {analysis.styleAnalysis.strengthMaximization.map((method: string, index: number) => (
                   <li key={index} className="flex items-start">
                     <span className="text-blue-500 mr-2 mt-1">↗</span>
                     <span className="text-blue-700 text-sm">{method}</span>
@@ -422,7 +422,7 @@ export default function InvestmentAnalysisStep({ onNext, onPrevious, userData }:
             <div className="bg-orange-50 rounded-lg p-4">
               <h4 className="font-semibold text-orange-800 mb-3">🔧 약점 보완 방법</h4>
               <ul className="space-y-2">
-                {analysis.styleAnalysis.weaknessImprovement.map((improvement, index) => (
+                {analysis.styleAnalysis.weaknessImprovement.map((improvement: string, index: number) => (
                   <li key={index} className="flex items-start">
                     <span className="text-orange-500 mr-2 mt-1">→</span>
                     <span className="text-orange-700 text-sm">{improvement}</span>
