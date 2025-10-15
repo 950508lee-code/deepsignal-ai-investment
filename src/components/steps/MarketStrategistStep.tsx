@@ -208,7 +208,7 @@ export default function MarketStrategistStep({ onNext, onPrevious, userData }: M
       <div className="text-center mb-6">
         <div className="text-4xl mb-4">📊</div>
         <h2 className="text-2xl font-bold text-gray-900 mb-2">시장전략가 소피아</h2>
-        <p className="text-indigo-600 font-medium mb-2 italic">"글로벌 마켓 인텔리전스"</p>
+        <p className="text-indigo-600 font-medium mb-2 italic">&quot;글로벌 마켓 인텔리전스&quot;</p>
         <p className="text-gray-600 mb-4">실시간 글로벌 시장을 종합 분석하여 AI가 공부 대신 요약해드립니다.</p>
       </div>
 
@@ -512,7 +512,7 @@ export default function MarketStrategistStep({ onNext, onPrevious, userData }: M
             
             <div className="mt-2 text-center">
               <p className="text-xs text-gray-500 italic">
-                "AI가 복잡한 지표를 쉬운 말로 설명해드립니다"
+                &quot;AI가 복잡한 지표를 쉬운 말로 설명해드립니다&quot;
               </p>
             </div>
           </div>

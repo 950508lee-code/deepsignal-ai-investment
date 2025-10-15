@@ -149,7 +149,12 @@ export default function AssetAllocationStep({ onNext, onPrevious, userData }: As
     }
   }
 
-  const portfolioData = getPortfolioOptions()
+  const complement = getPersonalityComplement()
+  const portfolioData = {
+    ...getPortfolioOptions(),
+    complement,
+    marketContext: marketAnalysis.aiSummary || '완화 기대 우세, 변동성은 중간. 위험자산 선별적 강세.'
+  }
   const selectedOption = portfolioData.options.find(opt => opt.id === selectedPortfolio)
 
   const handleNext = () => {
